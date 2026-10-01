@@ -14,20 +14,20 @@ export const PARTS = [
   {id: 'eye', name: '複眼', axis: [0, 0, 1], distance: 3, order: 1, mirror: true, parent: 'head'},
   {id: 'ocelli', name: '単眼', axis: [0, 1, 0], distance: 2.5, order: 1, parent: 'head'},
   {id: 'mouth', name: '口器', axis: [1, -0.6, 0], distance: 3.5, order: 1, parent: 'head'},
-  {id: 'head', name: '頭部', axis: [1, 0, 0], distance: 4.5, order: 2},
+  {id: 'head', name: '頭部', axis: [1, 0, 0], distance: 3.8, order: 2},
   {id: 'forewing', name: '前翅', axis: [0, 1, 0.35], distance: 6, order: 0, mirror: true},
   {id: 'hindwing', name: '後翅', axis: [0, 1, 0.6], distance: 4, order: 1, mirror: true},
   {id: 'foreleg', name: '前脚', axis: [0.4, -1, 0.3], distance: 3.5, order: 1, mirror: true},
   {id: 'midleg', name: '中脚', axis: [0, -1, 0.35], distance: 4, order: 1, mirror: true},
   {id: 'hindleg', name: '後脚', axis: [-0.4, -1, 0.4], distance: 4.5, order: 1, mirror: true},
   {id: 'thorax', name: '胸部', axis: [0, 0, 0], distance: 0, order: 0},   // 胸部は基準。動かない
-  {id: 'abdomen1', name: '腹部 第1節（見える順。形態学では第2節）', axis: [-1, 0, 0], distance: 2.5, order: 2},
-  {id: 'abdomen2', name: '腹部 第2節', axis: [-1, 0, 0], distance: 4.3, order: 2},
-  {id: 'abdomen3', name: '腹部 第3節', axis: [-1, 0, 0], distance: 6.1, order: 2},
-  {id: 'abdomen4', name: '腹部 第4節', axis: [-1, 0, 0], distance: 7.9, order: 2},
-  {id: 'abdomen5', name: '腹部 第5節', axis: [-1, 0, 0], distance: 9.7, order: 2},
-  {id: 'abdomen6', name: '腹部 第6節', axis: [-1, 0, 0], distance: 11.5, order: 2},
-  {id: 'sting', name: '毒針', axis: [-1, -0.2, 0], distance: 15, order: 0},
+  {id: 'abdomen1', name: '腹部 第1節（見える順。形態学では第2節）', axis: [-1, 0, 0], distance: 2.2, order: 2},
+  {id: 'abdomen2', name: '腹部 第2節', axis: [-1, 0, 0], distance: 3.7, order: 2},
+  {id: 'abdomen3', name: '腹部 第3節', axis: [-1, 0, 0], distance: 5.2, order: 2},
+  {id: 'abdomen4', name: '腹部 第4節', axis: [-1, 0, 0], distance: 6.7, order: 2},
+  {id: 'abdomen5', name: '腹部 第5節', axis: [-1, 0, 0], distance: 8.2, order: 2},
+  {id: 'abdomen6', name: '腹部 第6節', axis: [-1, 0, 0], distance: 9.7, order: 2},
+  {id: 'sting', name: '毒針', axis: [-1, -0.2, 0], distance: 12.5, order: 0},
 ];
 export const MAX_ORDER = Math.max(...PARTS.map((p) => p.order));
 
