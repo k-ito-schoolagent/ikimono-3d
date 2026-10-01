@@ -266,7 +266,6 @@ stage.animate((dt) => {
   if (toggles.conduction) conduction.update(state.conduction);
   valves.update(state.valves, dt);
   flow.update(state, playing ? dt * tempo : 0, toggles.flow && opening > 0.3);
-  if (!playing) flow.update(state, 0, toggles.flow && opening > 0.3);
 
   // 表示モードの移り変わり（背景の色、透け具合、切る位置）
   const want = mode === 'schematic' ? 1 : 0; bgMix += (want - bgMix) * Math.min(1, dt * 5);

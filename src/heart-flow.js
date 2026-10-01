@@ -16,7 +16,7 @@ export function createFlow(parent, segments, count = 1400) {
     for (const x of list) {if (r < x.length) {s = x; break;} r -= x.length;}
     particles.push({seg: s, u: Math.random(), mix: s.blood ?? (s.type === 'capillary' ? s.from : 0), jitter: new T.Vector3((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5), speed: 0.8 + Math.random() * 0.4});
   }
-  const m = new T.Matrix4(), p = new T.Vector3(), col = new T.Color();
+  const m = new T.Matrix4(), p = new T.Vector3(), col = new T.Color(), sc = new T.Vector3();
   const a = COLORS.artery, b = COLORS.vein;
   function update(state, dt, visible) {
     mesh.visible = visible; if (!visible) return;
@@ -41,7 +41,7 @@ export function createFlow(parent, segments, count = 1400) {
       if (q.seg.type === 'capillary') q.mix = q.seg.from + (q.seg.to - q.seg.from) * u;
       q.seg.curve.getPointAt(Math.min(0.9999, Math.max(0, u)), p);
       p.add(q.jitter);
-      m.makeTranslation(p.x, p.y, p.z); m.scale(new T.Vector3(1, 1, 1).multiplyScalar(0.85 + 0.3 * q.speed));
+      m.makeTranslation(p.x, p.y, p.z); m.scale(sc.setScalar(0.85 + 0.3 * q.speed));
       mesh.setMatrixAt(i, m);
       col.copy(b).lerp(a, q.mix); mesh.setColorAt(i, col);
     }

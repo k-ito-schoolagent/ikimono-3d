@@ -68,11 +68,11 @@ export function buildSchematic(host) {
   <g id="s-rv"><rect class="box" x="120" y="240" width="100" height="60" rx="8"/><text x="170" y="266" text-anchor="middle">右心室</text><text class="en" x="170" y="284" text-anchor="middle">RV</text></g>
   <g id="s-lv"><rect class="box" x="300" y="240" width="100" height="60" rx="8"/><text x="350" y="266" text-anchor="middle">左心室</text><text class="en" x="350" y="284" text-anchor="middle">LV</text></g>
   <line id="s-tri" class="valve" x1="155" y1="235" x2="185" y2="235"/><line id="s-mit" class="valve" x1="335" y1="235" x2="365" y2="235"/>
-  <line id="s-pul" class="valve" x1="225" y1="200" x2="255" y2="200"/><line id="s-aor" class="valve" x1="335" y1="320" x2="365" y2="320"/>
+  <line id="s-pul" class="valve" x1="225" y1="226" x2="255" y2="226"/><line id="s-aor" class="valve" x1="335" y1="320" x2="365" y2="320"/>
   <text class="en" x="248" y="150">肺動脈</text><text class="en" x="360" y="112">肺静脈</text>
   <text class="en" x="360" y="356">大動脈</text><text class="en" x="84" y="300" text-anchor="end">大静脈</text>
   <text class="en" x="108" y="238" text-anchor="end">三尖弁</text><text class="en" x="412" y="238">僧帽弁</text>
-  <text class="en" x="262" y="204">肺動脈弁</text><text class="en" x="372" y="324">大動脈弁</text>
+  <text class="en" x="262" y="230">肺動脈弁</text><text class="en" x="372" y="324">大動脈弁</text>
   <text x="298" y="124" text-anchor="middle" style="font-size:13px;font-weight:600">肺循環</text><text class="en" x="298" y="140" text-anchor="middle">RV → 肺 → LA</text>
   <text x="298" y="352" text-anchor="middle" style="font-size:13px;font-weight:600">体循環</text><text class="en" x="298" y="368" text-anchor="middle">LV → 全身 → RA</text>
 </svg>`;
