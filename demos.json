@@ -1,0 +1,26 @@
+[
+  {
+    "id": "heart",
+    "page": "heart.html",
+    "label": "心臓と血液循環",
+    "category": "ヒトのからだ",
+    "title": "心臓と血液循環",
+    "summary": "4つの部屋と4つの弁。洞房結節から広がる興奮、肺循環と体循環。心拍数を変えて、弁の開閉と血液の流れをスローで観察する。",
+    "authors": [
+      "@itoksk"
+    ],
+    "thumb": "thumbs/heart.webp"
+  },
+  {
+    "id": "osmosis",
+    "page": "osmosis.html",
+    "label": "浸透と細胞（見本）",
+    "category": "細胞",
+    "title": "浸透と細胞（新しいデモの見本）",
+    "summary": "外液の濃度を変えると、細胞はどちらへ、どのくらい変わる？ 等張・低張・高張と溶血。新しいデモをつくるときの見本です。",
+    "authors": [
+      "@itoksk"
+    ],
+    "thumb": "thumbs/osmosis.webp"
+  }
+]

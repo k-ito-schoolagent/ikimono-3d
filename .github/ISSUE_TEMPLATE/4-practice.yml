@@ -1,0 +1,16 @@
+name: 練習：はじめての issue
+description: GitHub の練習用。自己紹介や、デモにしてほしい仕組みをひとこと書いてみてください
+title: "[練習] はじめまして"
+labels: ["練習"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        issue を書く練習にどうぞ。メンテナーが返事をしたら閉じます。気軽に書いてください。
+  - type: textarea
+    id: hello
+    attributes:
+      label: ひとこと
+      placeholder: 例）高校で生物を教えています。腎臓のデモがあるとうれしいです。
+    validations:
+      required: true

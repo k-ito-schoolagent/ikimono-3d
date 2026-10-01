@@ -1,0 +1,5 @@
+html.embed header,html.embed .intro,html.embed .lab-note,html.embed footer,html.embed .camera-extra,html.embed .view-buttons,html.embed .workspace aside,html.embed .view-top,html.embed .view-bottom,html.embed .legend,html.embed .mode-row,html.embed .monitor{display:none!important}
+html.embed main{max-width:none;padding:0}
+html.embed .workspace{border:0;border-radius:0;height:100vh;height:100svh;grid-template-columns:1fr}
+html.embed .viewport{min-height:100vh;min-height:100svh}
+.thumb-save{position:fixed;right:16px;bottom:16px;z-index:9;background:var(--accent);color:var(--accent-ink);border-color:var(--accent);padding:0 16px}

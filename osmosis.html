@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d1916">
+<title>浸透と細胞（見本） / いきもの3D</title>
+<meta name="description" content="外液の濃度を変えて、細胞がふくらんだり縮んだりする様子を3Dで見る。新しいデモをつくるときの見本。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header></header>
+<main class="lab-main">
+  <section class="intro">
+    <div><div class="eyebrow">SAMPLE / 細胞 / 細胞膜と浸透</div><h1>水は、<em>濃い方</em>へ動く。</h1></div>
+    <p>細胞膜は水を通し、溶けている物質はほとんど通さない。<br>外液の濃度を変えて、細胞がどちらへ、どのくらい変わるかを見る。新しいデモをつくるときの見本です。</p>
+  </section>
+  <div class="workspace">
+    <section class="viewport" aria-label="浸透の3Dシミュレーション">
+      <div class="view-top"><span class="status"><b class="live-dot"></b><b>赤血球と外液</b><span id="run-status">実時間で再生中</span></span></div>
+      <div id="scene"></div>
+      <div class="view-buttons" role="group" aria-label="視点">
+        <button data-view="iso" aria-label="斜めの視点"><i data-lucide="box"></i></button>
+        <button data-view="front" aria-label="正面の視点"><i data-lucide="panel-top"></i></button>
+        <button data-view="top" aria-label="上からの視点"><i data-lucide="layout-grid"></i></button>
+        <button id="reset-view" aria-label="視点をリセット"><i data-lucide="rotate-ccw"></i></button>
+      </div>
+      <div class="legend"><span style="--stage:#8ab4e8">水の動き</span><span style="--stage:#d7363d">細胞</span></div>
+      <div class="view-bottom"><span>ドラッグで回転 · 細胞をクリックで説明 · ＋ / − で拡大縮小</span></div>
+    </section>
+    <aside tabindex="0" aria-label="操作と説明">
+      <div class="section-label">条件を変える</div>
+      <div class="control-block">
+        <div class="control-title"><label for="conc">外液の濃度</label><output id="conc-value">0.30<small>mol/L</small></output></div>
+        <input id="conc" type="range" min="0.05" max="0.9" step="0.01" value="0.3">
+        <div class="range-labels"><span>うすい</span><span>濃い</span></div>
+        <div class="presets" role="group" aria-label="プリセット"><button data-c="0.1">低張液</button><button data-c="0.3" aria-pressed="true">等張液</button><button data-c="0.6">高張液</button></div>
+      </div>
+      <div class="readings">
+        <div><span>外液</span><strong id="tonicity">等張液</strong></div>
+        <div><span>細胞の体積</span><strong id="volume">1.00<small>倍</small></strong></div>
+      </div>
+      <p class="hint" id="note">水の出入りはつり合っていて、体積は変わらない。</p>
+      <div class="play-row"><button id="play" class="primary">停止</button></div>
+      <div class="divider"></div>
+      <div class="section-label">説明</div>
+      <h2 id="part-name">浸透</h2>
+      <p id="part-description" class="description">半透膜をはさんで濃度がちがうと、水はうすい側から濃い側へ移動する。細胞の外が濃ければ水が出て縮み、うすければ水が入ってふくらむ。</p>
+      <p id="part-fact" class="fact"><b>POINT</b>ヒトの赤血球は 0.9 % の食塩水と等張。蒸留水に入れるとふくらんで破れる（溶血）。</p>
+    </aside>
+  </div>
+  <section class="lab-note">
+    <div>
+      <h2>体積の式</h2>
+      <div class="formula">V = Vb + (V0 − Vb) × C0 / C</div>
+      <p>V0 は等張液での体積、Vb は水が出入りしない部分の体積、C0 は等張液の濃度、C は外液の濃度。濃度が半分になれば水の入る部分の体積は2倍になる。</p>
+    </div>
+    <div class="assumptions">
+      <h2>モデルの前提</h2>
+      <dl>
+        <dt>何を計算しているか</dt><dd>細胞膜は水だけを通すものとして、外液の濃度から落ち着いたときの体積を求め、そこへ一次遅れで近づけています。等張液の濃度 0.3 mol/L、水が出入りしない部分の割合 0.4 はヒトの赤血球の代表値です。</dd>
+        <dt>省略・誇張していること</dt><dd>溶質が膜を通る効果、細胞膜の弾性、赤血球の円盤の形は含みません。溶血は体積が 1.7 倍を超えたときとして、破れる様子は模式的に表しています。このページは新しいデモの見本です（CONTRIBUTING.md を参照）。</dd>
+      </dl>
+    </div>
+  </section>
+  <footer><span>いきもの3D / LIVING ANATOMY LAB</span><span>見本デモ / 浸透と細胞</span></footer>
+</main>
+<script type="module" src="/src/osmosis.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4efe5">
+<title>いきもの3D / Living Anatomy Lab</title>
+<meta name="description" content="動物・ヒト・昆虫のからだと臓器のはたらきを、3Dで動かして学ぶ高校生物向けの教材集。計算モデルとその前提を明示し、だれでも新しいデモを追加できるオープンなプロジェクトです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header></header>
+<main class="home">
+  <section class="intro">
+    <div><div class="eyebrow">LIVING ANATOMY LAB / 高校生物</div><h1>動かして、からだの仕組みを知る。</h1></div>
+    <p>動物・ヒト・昆虫のからだと臓器のはたらきを、3Dで動かして学ぶ教材集です。<br>どのデモも、画面の裏で動いている計算モデルとその前提を明示しています。</p>
+  </section>
+  <section class="showcase" aria-label="デモの3Dショーケース">
+    <div class="show-stage">
+      <img id="show-poster" alt="">
+      <iframe id="show-frame" title="デモの3D表示" tabindex="-1"></iframe>
+    </div>
+    <div class="show-info" aria-live="polite">
+      <div class="eyebrow" id="show-meta"></div>
+      <h2 id="show-title"></h2>
+      <p id="show-summary"></p>
+      <a class="open" id="show-open">このデモを開く</a>
+      <div class="show-dots" id="show-dots" role="group" aria-label="ショーケースで見るデモを選ぶ"></div>
+      <p class="show-hint">3Dはドラッグで回せます。一覧のカードにマウスを乗せると、ここに表示されます。</p>
+    </div>
+  </section>
+  <p class="count" id="count"></p>
+  <div class="demo-list" id="demo-list"></div>
+  <section class="roadmap">
+    <div class="eyebrow">これからつくるもの</div>
+    <h2>シリーズの予定</h2>
+    <p>授業で「ここが動いて見えたら分かる」と思ったものから順につくります。リクエストや「自分でつくります」の宣言は issue へ。</p>
+    <ol>
+      <li><b>腎臓のネフロン</b>ろ過・再吸収・濃縮。原尿と尿の量と濃度の関係</li>
+      <li><b>昆虫の開放血管系と気管系</b>背脈管と体腔、気門から組織へ直接届く空気。ヒトの閉鎖血管系との比較</li>
+      <li><b>ニューロンの活動電位</b>Na⁺ / K⁺ チャネルの開閉と興奮の伝導、跳躍伝導</li>
+      <li><b>筋収縮</b>サルコメアの滑り説。アクチンとミオシン、Ca²⁺ と ATP</li>
+      <li><b>肺のガス交換</b>肺胞と毛細血管、分圧の差による拡散、呼吸運動</li>
+      <li><b>脊椎動物の心臓の比較</b>魚類・両生類・爬虫類・鳥類と哺乳類。心房と心室の数と血液の混ざり方</li>
+    </ol>
+  </section>
+  <section class="join">
+    <div>
+      <div class="eyebrow">OPEN SOURCE</div>
+      <h2>みんなでデモを増やしていきましょう。</h2>
+      <p>このラボはオープンソースです。授業で見せたい臓器や生き物の仕組みを、だれでも1ページのデモとして追加できます。GitHub がはじめての方の issue やプルリクエストの練習にも使ってください。</p>
+    </div>
+    <ol>
+      <li><b>話してみる</b>「こんなデモがほしい」「この説明はまちがっている」を issue に書く</li>
+      <li><b>直す・足す</b>説明文の改善、モデルの前提の追記、テストの追加をプルリクエストで送る</li>
+      <li><b>デモをつくる</b>雛形をコピーして、自分のデモを1ページつくる</li>
+    </ol>
+    <div class="join-links">
+      <a class="primary" id="gh-contrib" href="https://github.com/itoksk/ikimono-3d/blob/main/CONTRIBUTING.md">参加のしかたを読む</a>
+      <a id="gh-issue" href="https://github.com/itoksk/ikimono-3d/issues/new/choose">issue を書く</a>
+      <a id="gh-repo" href="https://github.com/itoksk/ikimono-3d">GitHub のリポジトリ</a>
+    </div>
+  </section>
+  <footer><span>いきもの3D / LIVING ANATOMY LAB</span><span>プログラムは MIT ライセンス、解説文は CC BY-SA 4.0</span></footer>
+</main>
+<script type="module" src="/src/gallery.js"></script>
+</body>
+</html>

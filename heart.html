@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1d1916">
+<title>心臓と血液循環 / いきもの3D</title>
+<meta name="description" content="ヒトの心臓を3Dで動かして、4つの部屋と弁、刺激伝導系、肺循環と体循環を学ぶ。心拍数を変えて、弁の開閉と血液の流れをスローで観察できる高校生物向け教材。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header></header>
+<main class="lab-main">
+  <section class="intro">
+    <div><div class="eyebrow">01 / ヒトのからだ / 体内環境の維持</div><h1>心臓は、<em>ずれて</em>動くポンプ。</h1></div>
+    <p>心房が先に、心室がすこし遅れて縮む。弁は圧力の差だけで開き、血液は一方向にしか進まない。<br>心拍数を変え、時間をゆっくりにして、ひと拍の中で起きていることを見る。</p>
+  </section>
+  <div class="workspace">
+    <section class="viewport" aria-label="心臓の3Dシミュレーション">
+      <div class="view-top"><span class="status"><b class="live-dot" id="live-dot"></b><b id="model-title">ヒトの心臓</b><span id="run-status">実時間で再生中</span></span><span id="assembly" aria-live="polite"></span></div>
+      <div id="scene"></div>
+      <div class="mode-row" role="group" aria-label="表示の切り替え">
+        <button data-render="solid" aria-pressed="true">外観</button>
+        <button data-render="xray" aria-pressed="false">透視</button>
+        <button data-render="section" aria-pressed="false">断面</button>
+        <button data-render="schematic" aria-pressed="false">線画</button>
+      </div>
+      <div class="view-buttons" role="group" aria-label="視点">
+        <button data-view="iso" aria-label="斜め前からの視点" title="斜め前 (1)"><i data-lucide="box"></i></button>
+        <button data-view="front" aria-label="正面の視点" title="正面 (2)"><i data-lucide="panel-top"></i></button>
+        <button data-view="left" aria-label="左側からの視点" title="左側 (3)"><i data-lucide="panel-left"></i></button>
+        <button data-view="top" aria-label="上からの視点" title="上 (4)"><i data-lucide="layout-grid"></i></button>
+        <button data-view="macro" aria-label="弁に近づく視点" title="弁に近づく (5)"><i data-lucide="scan-eye"></i></button>
+        <button id="reset-view" aria-label="視点をリセット" title="視点をリセット"><i data-lucide="rotate-ccw"></i></button>
+      </div>
+      <div class="phase-chip" aria-live="off"><span>心周期</span><b id="phase-name">—</b><div class="valves"><span><i id="v-av"></i>房室弁</span><span><i id="v-sl"></i>半月弁</span></div></div>
+      <div class="monitor" aria-hidden="true"><canvas id="ecg" width="460" height="104"></canvas><div class="bpm"><b id="bpm-big">70</b>bpm</div></div>
+      <div class="legend"><span style="--stage:#d7363d">動脈血（酸素が多い）</span><span style="--stage:#3f63b8">静脈血（酸素が少ない）</span><span style="--stage:#f2c14e">興奮の伝わり</span></div>
+      <div class="view-bottom"><span>ドラッグで回転 · 部位をクリックで説明 · <kbd>space</kbd> 停止 <kbd>1–5</kbd> 視点 <kbd>R</kbd> 表示 <kbd>H</kbd> UIを隠す</span></div>
+      <button id="ui-restore" type="button">UIを表示 (H)</button>
+    </section>
+    <aside tabindex="0" aria-label="操作と説明">
+      <div class="section-label">条件を変える</div>
+      <div class="control-block">
+        <div class="control-title"><label for="hr">心拍数</label><output id="hr-value">70<small>bpm</small></output></div>
+        <input id="hr" type="range" min="40" max="180" step="1" value="70" aria-describedby="preset-note">
+        <div class="range-labels"><span>40</span><span>180</span></div>
+        <div class="presets" role="group" aria-label="自律神経のプリセット"><button data-preset="rest" aria-pressed="true">安静</button><button data-preset="walk" aria-pressed="false">軽い運動</button><button data-preset="run" aria-pressed="false">激しい運動</button></div>
+        <p class="hint" id="preset-note">副交感神経（迷走神経）が優位。洞房結節の興奮の頻度は低い。</p>
+      </div>
+      <div class="control-block">
+        <div class="control-title"><label for="tempo">時間の速さ</label><output id="tempo-value">1<small>×</small></output></div>
+        <input id="tempo" type="range" min="0" max="1" step="0.001" value="1">
+        <div class="range-labels"><span>1/50 スロー</span><span>実時間</span></div>
+        <div class="play-row"><button id="play" class="primary">停止</button><button id="step" aria-label="ひと拍だけ進める">ひと拍</button></div>
+      </div>
+      <label class="switch-row"><span>血液の流れ（粒）</span><input type="checkbox" id="show-flow" checked></label>
+      <label class="switch-row"><span>興奮の伝わり（刺激伝導系）</span><input type="checkbox" id="show-conduction" checked></label>
+      <label class="switch-row"><span>部位の名前</span><input type="checkbox" id="show-labels" checked></label>
+      <div class="divider"></div>
+      <div class="section-label">いまの値</div>
+      <div class="readings">
+        <div><span>1回拍出量</span><strong id="sv">—<small>mL</small></strong></div>
+        <div><span>心拍出量</span><strong id="co">—<small>L/分</small></strong></div>
+        <div><span>血圧（大動脈）</span><strong id="bp">—<small>mmHg</small></strong></div>
+        <div><span>心周期</span><strong id="rr">—<small>秒</small></strong></div>
+      </div>
+      <canvas class="chart" id="chart" width="640" height="420" aria-label="心電図・圧力・容積のグラフ"></canvas>
+      <div class="chart-legend"><span style="--stage:#f2c14e">心電図</span><span style="--stage:#d7363d">左心室の圧</span><span style="--stage:#c08a7a">大動脈の圧</span><span style="--stage:#8aa6d6">左心室の容積</span></div>
+      <div class="divider"></div>
+      <div class="section-label">説明</div>
+      <h2 id="part-name">心臓の全体</h2>
+      <p id="part-description" class="description">にぎりこぶしほどの大きさの筋肉のポンプ。右側は肺へ、左側は全身へ血液を送る。2つのポンプが同じ拍子で、同じ量を送り出す。</p>
+      <p id="part-fact" class="fact"><b>POINT</b>心臓は一生で約25億回拍動する。安静時でも1分間に約5 L、全身の血液量とほぼ同じ量を送り出している。</p>
+      <div class="part-selector" id="part-selector" role="group" aria-label="部位を選ぶ"></div>
+    </aside>
+  </div>
+  <section class="lab-note">
+    <div>
+      <h2>血液の通り道</h2>
+      <p>右心室から肺へ行って左心房に戻る<b>肺循環</b>と、左心室から全身へ行って右心房に戻る<b>体循環</b>。模式図は3Dと同じ拍子で動き、開いている弁だけが通れる。</p>
+      <div id="schematic"></div>
+    </div>
+    <div>
+      <h2>ひと拍の中で起きていること</h2>
+      <p>心周期は5つの期に分けられる。いま3Dが見せている期が強調される。</p>
+      <div class="phase-list" id="phase-list"></div>
+      <p class="hint">左心室の圧が大動脈の圧を上回ったときだけ大動脈弁が開き、左心房の圧が左心室の圧を上回ったときだけ僧帽弁が開く。弁を動かす筋肉はなく、圧力の差で受動的に開閉する。</p>
+    </div>
+    <div class="assumptions">
+      <h2>モデルの前提</h2>
+      <dl>
+        <dt>何を計算しているか</dt><dd>心拍数から心周期の各期の長さ（心室収縮期は安静時0.3秒で、心拍数が上がると短くなる）、心室と心房の容積、左心室・大動脈・左心房の圧力、弁の開閉、心電図の形、刺激伝導系の興奮の位置を求めています。1回拍出量は安静時70 mLで、交感神経の緊張で増え、心拍数が高すぎると充満の時間が足りずに頭打ちになります。心拍出量 = 心拍数 × 1回拍出量。</dd>
+        <dt>省略・誇張していること</dt><dd>数値はヒト成人の代表値です。右心系の圧は左心系の1/5として表示し、容積の変化は左右で等しいとしています。血管の抵抗、静脈還流の変化、呼吸の影響、冠状動脈、心臓の捻れる動きは含みません。形は部屋の位置関係と壁の厚さの違いが分かるように模式化したもので、解剖図の寸法ではありません。血液の粒の数と速さは観察用の誇張です。</dd>
+        <dt>画面の約束</dt><dd>酸素の多い血液（動脈血）は赤、少ない血液（静脈血）は青。興奮の伝わりは黄色。断面は心臓を縦に切って、心室中隔と壁の厚さが見える面です。</dd>
+      </dl>
+    </div>
+    <div>
+      <h2>参考</h2>
+      <ul class="ref-list">
+        <li><a href="https://www.msdmanuals.com/ja-jp/home/06-%E5%BF%83%E8%87%93%E3%81%A8%E8%A1%80%E7%AE%A1%E3%81%AE%E7%97%85%E6%B0%97/%E5%BF%83%E8%87%93%E3%81%A8%E8%A1%80%E7%AE%A1%E3%81%AE%E7%94%9F%E7%89%A9%E5%AD%A6/%E5%BF%83%E8%87%93%E3%81%AE%E7%94%9F%E7%89%A9%E5%AD%A6" target="_blank" rel="noopener">MSDマニュアル家庭版「心臓の生物学」</a></li>
+        <li><a href="https://www.jstage.jst.go.jp/article/shinzo/43/11/43_1391/_pdf" target="_blank" rel="noopener">渡邉英一「心拍数の調節機構」心臓 43(11), 2011</a></li>
+        <li><a href="https://www.kango-roo.com/word/14074" target="_blank" rel="noopener">看護roo!「心周期」</a></li>
+        <li><a href="https://threejs.org/docs/" target="_blank" rel="noopener">three.js</a></li>
+      </ul>
+      <div class="kbd-row"><span><kbd>space</kbd>再生／停止</span><span><kbd>1–5</kbd>視点</span><span><kbd>R</kbd>表示を切り替え</span><span><kbd>H</kbd>UIを隠す</span><span><kbd>esc</kbd>選択を解除</span></div>
+    </div>
+  </section>
+  <footer><span>いきもの3D / LIVING ANATOMY LAB</span><span>01 / 心臓と血液循環</span></footer>
+</main>
+<script type="module" src="/src/heart.js"></script>
+</body>
+</html>

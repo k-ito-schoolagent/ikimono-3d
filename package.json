@@ -1,0 +1,21 @@
+{
+  "name": "ikimono-3d",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test \"src/**/*.test.js\"",
+    "new-demo": "node scripts/new-demo.mjs"
+  },
+  "dependencies": {
+    "three": "^0.180.0",
+    "lucide": "^0.468.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  },
+  "description": "いきもの3D — 動物・ヒト・昆虫のからだと臓器のはたらきを3Dで動かして学ぶ、高校生物向けの日本語教材集（だれでもデモを追加できます）",
+  "license": "MIT"
+}
