@@ -57,24 +57,24 @@ export function buildSchematic(host) {
   host.innerHTML = `<svg class="schematic" viewBox="0 0 520 470" role="img" aria-label="血液の通り道の模式図。右心室から肺へ行って左心房に戻る肺循環と、左心室から全身へ行って右心房に戻る体循環">
   <rect class="organ" x="150" y="18" width="220" height="64" rx="32"/><text x="260" y="44" text-anchor="middle">肺</text><text class="en" x="260" y="64" text-anchor="middle">GAS EXCHANGE · 静脈血 → 動脈血</text>
   <rect class="organ" x="110" y="388" width="300" height="64" rx="32"/><text x="260" y="414" text-anchor="middle">全身（頭・腕・内臓・脚）</text><text class="en" x="260" y="434" text-anchor="middle">SYSTEMIC CAPILLARIES · 動脈血 → 静脈血</text>
-  <!-- 肺循環: 右心室 → 肺動脈 → 肺 → 肺静脈 → 左心房 -->
-  <path id="p-pa" class="flow v" d="M190 232 L190 150 Q190 50 215 50"/><path class="dots" d="M190 232 L190 150 Q190 50 215 50"/>
-  <path id="p-pv" class="flow a" d="M305 50 Q330 50 330 150 L330 170"/><path class="dots" d="M305 50 Q330 50 330 150 L330 170"/>
-  <!-- 体循環: 左心室 → 大動脈 → 全身 → 大静脈 → 右心房 -->
-  <path id="p-ao" class="flow a" d="M330 300 L330 340 Q330 420 300 420"/><path class="dots" d="M330 300 L330 340 Q330 420 300 420"/>
-  <path id="p-vc" class="flow v" d="M220 420 Q190 420 190 340 L190 300 L190 170"/><path class="dots" d="M220 420 Q190 420 190 340 L190 300 L190 170"/>
-  <g id="s-ra"><rect class="box" x="140" y="170" width="100" height="60" rx="8"/><text x="190" y="196" text-anchor="middle">右心房</text><text class="en" x="190" y="214" text-anchor="middle">RA</text></g>
-  <g id="s-la"><rect class="box" x="280" y="170" width="100" height="60" rx="8"/><text x="330" y="196" text-anchor="middle">左心房</text><text class="en" x="330" y="214" text-anchor="middle">LA</text></g>
-  <g id="s-rv"><rect class="box" x="140" y="240" width="100" height="60" rx="8"/><text x="190" y="266" text-anchor="middle">右心室</text><text class="en" x="190" y="284" text-anchor="middle">RV</text></g>
-  <g id="s-lv"><rect class="box" x="280" y="240" width="100" height="60" rx="8"/><text x="330" y="266" text-anchor="middle">左心室</text><text class="en" x="330" y="284" text-anchor="middle">LV</text></g>
-  <line id="s-tri" class="valve" x1="175" y1="235" x2="205" y2="235"/><line id="s-mit" class="valve" x1="315" y1="235" x2="345" y2="235"/>
-  <line id="s-pul" class="valve" x1="175" y1="150" x2="205" y2="150"/><line id="s-aor" class="valve" x1="315" y1="320" x2="345" y2="320"/>
-  <text class="en" x="176" y="112" text-anchor="end">肺動脈</text><text class="en" x="344" y="112">肺静脈</text>
-  <text class="en" x="344" y="356">大動脈</text><text class="en" x="176" y="356" text-anchor="end">大静脈</text>
-  <text class="en" x="128" y="238" text-anchor="end">三尖弁</text><text class="en" x="392" y="238">僧帽弁</text>
-  <text class="en" x="128" y="154" text-anchor="end">肺動脈弁</text><text class="en" x="392" y="324">大動脈弁</text>
-  <text x="260" y="124" text-anchor="middle" style="font-size:13px;font-weight:600">肺循環</text><text class="en" x="260" y="140" text-anchor="middle">RV → PA → 肺 → PV → LA</text>
-  <text x="260" y="352" text-anchor="middle" style="font-size:13px;font-weight:600">体循環</text><text class="en" x="260" y="368" text-anchor="middle">LV → 大動脈 → 全身 → 大静脈 → RA</text>
+  <!-- 肺循環: 右心室 → 肺動脈（心房のあいだを上る）→ 肺 → 肺静脈 → 左心房 -->
+  <path class="flow v" d="M205 240 Q240 240 240 200 L240 120 Q240 50 215 50"/><path class="dots" d="M205 240 Q240 240 240 200 L240 120 Q240 50 215 50"/>
+  <path class="flow a" d="M305 50 Q350 50 350 120 L350 170"/><path class="dots" d="M305 50 Q350 50 350 120 L350 170"/>
+  <!-- 体循環: 左心室 → 大動脈 → 全身 → 大静脈（心臓の外側を回って）→ 右心房 -->
+  <path class="flow a" d="M350 300 L350 340 Q350 420 300 420"/><path class="dots" d="M350 300 L350 340 Q350 420 300 420"/>
+  <path class="flow v" d="M220 420 Q90 420 90 300 L90 200 L120 200"/><path class="dots" d="M220 420 Q90 420 90 300 L90 200 L120 200"/>
+  <g id="s-ra"><rect class="box" x="120" y="170" width="100" height="60" rx="8"/><text x="170" y="196" text-anchor="middle">右心房</text><text class="en" x="170" y="214" text-anchor="middle">RA</text></g>
+  <g id="s-la"><rect class="box" x="300" y="170" width="100" height="60" rx="8"/><text x="350" y="196" text-anchor="middle">左心房</text><text class="en" x="350" y="214" text-anchor="middle">LA</text></g>
+  <g id="s-rv"><rect class="box" x="120" y="240" width="100" height="60" rx="8"/><text x="170" y="266" text-anchor="middle">右心室</text><text class="en" x="170" y="284" text-anchor="middle">RV</text></g>
+  <g id="s-lv"><rect class="box" x="300" y="240" width="100" height="60" rx="8"/><text x="350" y="266" text-anchor="middle">左心室</text><text class="en" x="350" y="284" text-anchor="middle">LV</text></g>
+  <line id="s-tri" class="valve" x1="155" y1="235" x2="185" y2="235"/><line id="s-mit" class="valve" x1="335" y1="235" x2="365" y2="235"/>
+  <line id="s-pul" class="valve" x1="225" y1="200" x2="255" y2="200"/><line id="s-aor" class="valve" x1="335" y1="320" x2="365" y2="320"/>
+  <text class="en" x="248" y="150">肺動脈</text><text class="en" x="360" y="112">肺静脈</text>
+  <text class="en" x="360" y="356">大動脈</text><text class="en" x="84" y="300" text-anchor="end">大静脈</text>
+  <text class="en" x="108" y="238" text-anchor="end">三尖弁</text><text class="en" x="412" y="238">僧帽弁</text>
+  <text class="en" x="262" y="204">肺動脈弁</text><text class="en" x="372" y="324">大動脈弁</text>
+  <text x="298" y="124" text-anchor="middle" style="font-size:13px;font-weight:600">肺循環</text><text class="en" x="298" y="140" text-anchor="middle">RV → 肺 → LA</text>
+  <text x="298" y="352" text-anchor="middle" style="font-size:13px;font-weight:600">体循環</text><text class="en" x="298" y="368" text-anchor="middle">LV → 全身 → RA</text>
 </svg>`;
   const $ = (id) => host.querySelector('#' + id);
   const boxes = {ra: $('s-ra'), la: $('s-la'), rv: $('s-rv'), lv: $('s-lv')};
