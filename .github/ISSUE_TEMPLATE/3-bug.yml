@@ -7,7 +7,7 @@ body:
     id: page
     attributes:
       label: ページ
-      placeholder: 例）https://itoksk.github.io/ikimono-3d/heart.html
+      placeholder: 例）https://k-ito-schoolagent.github.io/ikimono-3d/heart.html
     validations:
       required: true
   - type: textarea
