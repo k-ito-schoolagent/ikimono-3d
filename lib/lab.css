@@ -58,3 +58,11 @@ kbd{font-family:var(--mono);font-size:10px;border:1px solid var(--line-strong);b
 .viewport.paper .measure-label{background:transparent;color:#3a2f28;font-size:12px}
 .viewport.paper .live-dot{box-shadow:none}
 .dimension-label{pointer-events:none;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:#3a2f28;background:rgba(241,233,216,.85);padding:2px 6px;border-radius:2px}
+/* 分解スライダー（ビューポートの下中央に浮かぶ） */
+.explode-bar{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);z-index:2;display:flex;align-items:center;gap:12px;padding:8px 16px;border:1px solid var(--surface-line);border-radius:999px;background:var(--surface-2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--on-surface-muted);white-space:nowrap}
+.explode-bar input[type=range]{width:200px;margin:0;height:22px}
+.explode-bar input[type=range]::-webkit-slider-runnable-track{background:var(--surface-line)}
+.explode-bar input[type=range]::-webkit-slider-thumb{background:var(--on-surface);border-color:var(--on-surface);margin-top:-8px}
+.explode-bar kbd{background:transparent;color:var(--on-surface-muted);border-color:var(--surface-line)}
+.viewport.clean .explode-bar{display:none}
+@media(max-width:760px){.explode-bar{bottom:50px;padding:6px 12px;gap:8px}.explode-bar input[type=range]{width:120px}.explode-bar kbd{display:none}}

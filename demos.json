@@ -12,6 +12,18 @@
     "thumb": "thumbs/heart.webp"
   },
   {
+    "id": "bee",
+    "dir": "bee",
+    "label": "ミツバチのからだ",
+    "category": "昆虫",
+    "title": "ミツバチのからだ",
+    "summary": "働き蜂を分解して、頭部・胸部・腹部、複眼と触角、脚3対と翅2対、気門と気管系、背脈管と蜜胃を見る。翅先が描く8の字をスローで観察する。",
+    "authors": [
+      "@itoksk"
+    ],
+    "thumb": "thumbs/bee.webp"
+  },
+  {
     "id": "osmosis",
     "dir": "osmosis",
     "label": "浸透と細胞（見本）",

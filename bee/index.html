@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4efe5">
+<title>ミツバチのからだ / いきもの3D</title>
+<meta name="description" content="働き蜂のからだを3Dで分解して、頭部・胸部・腹部、複眼と触角、脚3対と翅2対、気門と気管系、背脈管、蜜胃や毒針を見る。翅の8の字の動きをスローで観察できる高校生物向け教材。">
+<script>try{var t=localStorage.getItem('ikimono-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23b5402c' d='M16 29 5 18a6.5 6.5 0 0 1 9.2-9.2L16 10.6l1.8-1.8A6.5 6.5 0 0 1 27 18z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header></header>
+<main class="lab-main">
+  <section class="intro">
+    <div><div class="eyebrow">02 / 昆虫 / 体のつくり</div><h1>昆虫のからだは、<em>3つ</em>に分かれている。</h1></div>
+    <p>頭部・胸部・腹部。脚3対と翅2対はすべて胸部につく。肺はなく、気門から入った空気を気管が直接届ける。<br>働き蜂を分解して、外骨格の中まで見る。</p>
+  </section>
+  <div class="workspace">
+    <section class="viewport" aria-label="ミツバチの3Dシミュレーション">
+      <div class="view-top"><span class="status"><b class="live-dot" id="live-dot"></b><b>セイヨウミツバチ · 働き蜂</b><span id="run-status">休んでいる</span></span><span id="assembly" aria-live="polite"></span></div>
+      <div id="scene"></div>
+      <div class="mode-row" role="group" aria-label="表示の切り替え">
+        <button data-render="solid" aria-pressed="true">外観</button>
+        <button data-render="xray" aria-pressed="false">透視</button>
+        <button data-render="schematic" aria-pressed="false">線画</button>
+      </div>
+      <div class="view-buttons" role="group" aria-label="視点">
+        <button data-view="iso" aria-label="斜め前からの視点" title="斜め前 (1)"><i data-lucide="box"></i></button>
+        <button data-view="front" aria-label="正面の視点" title="正面 (2)"><i data-lucide="panel-top"></i></button>
+        <button data-view="side" aria-label="横からの視点" title="横 (3)"><i data-lucide="panel-left"></i></button>
+        <button data-view="top" aria-label="上からの視点" title="上 (4)"><i data-lucide="layout-grid"></i></button>
+        <button data-view="macro" aria-label="頭に近づく視点" title="頭に近づく (5)"><i data-lucide="scan-eye"></i></button>
+        <button id="reset-view" aria-label="視点をリセット" title="視点をリセット"><i data-lucide="rotate-ccw"></i></button>
+      </div>
+      <div class="phase-chip" aria-live="off"><span>はばたき</span><b id="beat-readout">—</b><div id="beat-note">翅を休めている</div></div>
+      <div class="explode-bar"><label for="explode">組み立て</label><input id="explode" type="range" min="0" max="1" step="0.001" value="0" aria-label="組み立てから分解へ"><span>分解</span><kbd>E</kbd></div>
+      <div class="view-bottom"><span>ドラッグで回転 · 部位をクリックで説明 · <kbd>E</kbd> 分解 <kbd>F</kbd> はばたく <kbd>R</kbd> 表示 <kbd>H</kbd> UIを隠す</span></div>
+      <button id="ui-restore" type="button">UIを表示 (H)</button>
+    </section>
+    <aside tabindex="0" aria-label="操作と説明">
+      <div class="section-label">動かす</div>
+      <div class="control-block">
+        <div class="play-row"><button id="fly" class="primary">はばたく</button><button id="buzz" aria-pressed="false">羽音を聞く</button></div>
+        <p class="hint" id="buzz-note">はばたき 230 回/秒 の振動が、そのまま 230 Hz の羽音になる（A♯3 くらいの高さ）。</p>
+      </div>
+      <div class="control-block">
+        <div class="control-title"><label for="tempo">時間の速さ</label><output id="tempo-value">1/50<small>スロー</small></output></div>
+        <input id="tempo" type="range" min="0" max="1" step="0.001" value="0">
+        <div class="range-labels"><span>1/50 スロー</span><span>実時間</span></div>
+        <p class="hint">1/50 にすると、翅先の8の字と、反転のたびに変わる翅のひねりが見える。実時間では速すぎて、翅は半透明の扇のように見える。</p>
+      </div>
+      <label class="switch-row"><span>部位の名前</span><input type="checkbox" id="show-labels" checked></label>
+      <label class="switch-row"><span>組み立ての線（分解したとき）</span><input type="checkbox" id="show-guides" checked></label>
+      <label class="switch-row"><span>翅先の軌跡</span><input type="checkbox" id="show-trail" checked></label>
+      <div class="divider"></div>
+      <div class="section-label">はたらき蜂の数</div>
+      <div class="readings">
+        <div><span>体長</span><strong>13<small>mm</small></strong></div>
+        <div><span>はばたき</span><strong>230<small>回/秒</small></strong></div>
+        <div><span>翅のストローク</span><strong>90<small>°</small></strong></div>
+        <div><span>複眼の個眼</span><strong>約5,000<small>個</small></strong></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label">説明</div>
+      <h2 id="part-name">ミツバチ（働き蜂）の全体</h2>
+      <p id="part-description" class="description">昆虫のからだは頭部・胸部・腹部の3つに分かれ、外骨格（クチクラ）でおおわれている。脚3対と翅2対はすべて胸部につく。</p>
+      <p id="part-fact" class="fact"><b>POINT</b>働き蜂は卵を産まないメス。体長は12〜14 mm、はばたきは1秒に最大230回。</p>
+      <div class="part-selector" id="part-selector" role="group" aria-label="部位を選ぶ"></div>
+    </aside>
+  </div>
+  <section class="lab-note">
+    <div>
+      <h2>翅先の描く8の字</h2>
+      <p>翅は前後に大きく振れ（ストローク 約90°）、上下に小さくずれる。上下のずれは前後の2倍の速さで繰り返すので、翅先は8の字を描く。反転のたびに翅がひねられ、<b>打ち下ろしでも打ち上げでも前縁が先に進む</b>。これで空気を下へ押し続けられる。</p>
+      <canvas class="chart" id="trace" width="640" height="360" aria-label="翅先の軌跡（8の字）"></canvas>
+    </div>
+    <div>
+      <h2>昆虫のからだの約束</h2>
+      <ol>
+        <li><b>外骨格</b>　かたいクチクラが体を外から支える。成長するには脱皮が要る</li>
+        <li><b>頭・胸・腹</b>　体節がまとまって3つの部分になる。脚3対と翅2対は胸部につく</li>
+        <li><b>複眼と単眼</b>　複眼は個眼の集まり。単眼は明るさを感じる</li>
+        <li><b>気門と気管系</b>　体の側面の気門から空気を取りこみ、気管が細胞のそばまで酸素を届ける。肺はない</li>
+        <li><b>開放血管系</b>　血管は背脈管1本だけ。体液は体のすき間を流れ、酸素は運ばない</li>
+        <li><b>変態</b>　卵・幼虫・さなぎ・成虫（完全変態）。働き蜂は羽化後、巣の中の仕事から外の仕事へ移っていく</li>
+      </ol>
+    </div>
+    <div class="assumptions">
+      <h2>モデルの前提</h2>
+      <dl>
+        <dt>何を計算しているか</dt><dd>分解図は、各部位が本当の組み立ての向き（頭は前、翅は上、脚は下、腹部の節は後ろへ入れ子に）へ、外側の部位から順に離れていくように計算しています。翅の動きは、前後のストローク（振幅 90°）、その2倍の周期の上下のずれ（14°）、反転ごとに向きが変わるひねり（45°）の3つの正弦波で表しています。羽音の高さは、はばたき数をそのまま周波数（230 Hz）として鳴らしています。</dd>
+        <dt>省略・誇張していること</dt><dd>形は部位の位置関係と数が分かるように模式化したもので、解剖図の寸法ではありません。翅脈の数と走り方、脚の節の細部、口器の構造は簡略化しています。内臓は代表的なものだけで、マルピーギ管や生殖器、脂肪体は入れていません。はばたきの振幅・ひねりは文献の代表値で、飛び方によって変わります。数値はセイヨウミツバチの働き蜂の代表値です。</dd>
+      </dl>
+    </div>
+    <div>
+      <h2>参考</h2>
+      <ul class="ref-list">
+        <li><a href="https://www.bee-lab.jp/hobeey/hobeeydb/db01/hobeey01_14.html" target="_blank" rel="noopener">山田養蜂場 ミツバチ研究支援サイト HOBEEY「ミツバチとはどんな生物か？」</a></li>
+        <li><a href="https://askabiologist.asu.edu/honey-bee-anatomy" target="_blank" rel="noopener">Arizona State University, Ask A Biologist "Honey bee anatomy"</a></li>
+        <li><a href="https://ja.wikipedia.org/wiki/%E6%B0%97%E9%96%80" target="_blank" rel="noopener">Wikipedia「気門」</a></li>
+        <li><a href="https://threejs.org/docs/" target="_blank" rel="noopener">three.js</a></li>
+      </ul>
+      <div class="kbd-row"><span><kbd>E</kbd>分解／組み立て</span><span><kbd>F</kbd>はばたく／休む</span><span><kbd>space</kbd>停止</span><span><kbd>1–5</kbd>視点</span><span><kbd>R</kbd>表示を切り替え</span><span><kbd>H</kbd>UIを隠す</span><span><kbd>esc</kbd>選択を解除</span></div>
+    </div>
+  </section>
+  <footer><span>いきもの3D / LIVING ANATOMY LAB</span><span>02 / ミツバチのからだ</span></footer>
+</main>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
