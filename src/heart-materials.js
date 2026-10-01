@@ -72,7 +72,7 @@ float keep = max(isTarget, isSel);
 diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 0.38 + vec3(0.06, 0.05, 0.05), uDim * (1.0 - keep));`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
 float flash = dot(vLobe, vec4(uFlash[0], uFlash[1], uFlash[2], uFlash[3]));
-totalEmissiveRadiance += vec3(0.95, 0.72, 0.25) * flash * 0.9;
+totalEmissiveRadiance += vec3(0.95, 0.72, 0.25) * flash * 0.5;
 vec3 nv = normalize(vNormal); vec3 vv = normalize(vViewPosition);
 float fres = pow(1.0 - max(dot(nv, vv), 0.0), 2.5);
 totalEmissiveRadiance += vec3(1.0, 0.86, 0.6) * fres * 0.55 * max(isTarget, isSel * 0.6);`);

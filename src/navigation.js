@@ -22,9 +22,9 @@ if (THUMB) {
 
 // ライト／ダークの切り替え。OS の設定を初期値にして、選んだ方を localStorage に覚える
 const THEME_KEY = 'ikimono-theme';
-export function applyTheme(theme) {
+export function applyTheme(theme, persist = true) {
   document.documentElement.dataset.theme = theme;
-  try {localStorage.setItem(THEME_KEY, theme);} catch {}
+  if (persist) try {localStorage.setItem(THEME_KEY, theme);} catch {}
   document.querySelectorAll('.theme-toggle').forEach((b) => {b.setAttribute('aria-pressed', String(theme === 'dark')); b.setAttribute('aria-label', theme === 'dark' ? 'ライトモードにする' : 'ダークモードにする');});
 }
 export function currentTheme() {
@@ -41,8 +41,7 @@ export function mountNavigation(current) {
     items.map(([id, url, n, label]) => `<a href="${base}${url}" ${id === current ? 'aria-current="page"' : ''}><span>${n}</span>${label}</a>`).join('') +
     `</nav><button class="theme-toggle" type="button" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>`;
   header.querySelector('[aria-current]')?.scrollIntoView({block: 'nearest', inline: 'center'});
-  const theme = currentTheme();
-  applyTheme(theme);
+  applyTheme(currentTheme(), false);   // 選んだときだけ覚える（OS の設定に追従できるように）
   header.querySelector('.theme-toggle').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 }
 
