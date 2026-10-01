@@ -51,7 +51,7 @@
         <div class="control-title"><label for="tempo">時間の速さ</label><output id="tempo-value">1/50<small>スロー</small></output></div>
         <input id="tempo" type="range" min="0" max="1" step="0.001" value="0">
         <div class="range-labels"><span>1/50 スロー</span><span>実時間</span></div>
-        <p class="hint">1/50 にすると、翅先の8の字と、反転のたびに変わる翅のひねりが見える。実時間では速すぎて、翅は半透明の扇のように見える。</p>
+        <p class="hint">1/50 にすると、翅先の8の字と、反転のたびに翅が立って裏返る動きが見える。実時間では速すぎて、翅は半透明の扇のように見える。</p>
       </div>
       <label class="switch-row"><span>部位の名前</span><input type="checkbox" id="show-labels" checked></label>
       <label class="switch-row"><span>組み立ての線（分解したとき）</span><input type="checkbox" id="show-guides" checked></label>
@@ -60,22 +60,22 @@
       <div class="section-label">はたらき蜂の数</div>
       <div class="readings">
         <div><span>体長</span><strong>13<small>mm</small></strong></div>
-        <div><span>はばたき</span><strong>230<small>回/秒</small></strong></div>
-        <div><span>翅のストローク</span><strong>90<small>°</small></strong></div>
-        <div><span>複眼の個眼</span><strong>約5,000<small>個</small></strong></div>
+        <div><span>はばたき（ホバリング時）</span><strong>約230<small>回/秒</small></strong></div>
+        <div><span>翅の振れ幅</span><strong>90<small>°</small></strong></div>
+        <div><span>複眼の個眼（片眼）</span><strong>約5,000<small>個</small></strong></div>
       </div>
       <div class="divider"></div>
       <div class="section-label">説明</div>
       <h2 id="part-name">ミツバチ（働き蜂）の全体</h2>
       <p id="part-description" class="description">昆虫のからだは頭部・胸部・腹部の3つに分かれ、外骨格（クチクラ）でおおわれている。脚3対と翅2対はすべて胸部につく。</p>
-      <p id="part-fact" class="fact"><b>POINT</b>働き蜂は卵を産まないメス。体長は12〜14 mm、はばたきは1秒に最大230回。</p>
+      <p id="part-fact" class="fact"><b>POINT</b>働き蜂はふつう卵を産まないメス。体長は12〜14 mm、はばたきはホバリング時で1秒に約230回。</p>
       <div class="part-selector" id="part-selector" role="group" aria-label="部位を選ぶ"></div>
     </aside>
   </div>
   <section class="lab-note">
     <div>
       <h2>翅先の描く8の字</h2>
-      <p>翅は前後に大きく振れ（ストローク 約90°）、上下に小さくずれる。上下のずれは前後の2倍の速さで繰り返すので、翅先は8の字を描く。反転のたびに翅がひねられ、<b>打ち下ろしでも打ち上げでも前縁が先に進む</b>。これで空気を下へ押し続けられる。</p>
+      <p>ホバリングでは翅をほぼ水平に前後に振る（振れ幅 約90°）。前へ振る半周期が打ち下ろし、後ろへ振る半周期が打ち上げにあたる。上下のずれは前後の2倍の速さで繰り返すので、翅先は8の字を描く。反転のたびに翅が立って裏返り、<b>どちらへ動くときも前縁が先に進む</b>。迎え角は約45°で、空気を下へ押し続けられる。</p>
       <canvas class="chart" id="trace" width="640" height="360" aria-label="翅先の軌跡（8の字）"></canvas>
     </div>
     <div>
@@ -92,7 +92,7 @@
     <div class="assumptions">
       <h2>モデルの前提</h2>
       <dl>
-        <dt>何を計算しているか</dt><dd>分解図は、各部位が本当の組み立ての向き（頭は前、翅は上、脚は下、腹部の節は後ろへ入れ子に）へ、外側の部位から順に離れていくように計算しています。翅の動きは、前後のストローク（振幅 90°）、その2倍の周期の上下のずれ（14°）、反転ごとに向きが変わるひねり（45°）の3つの正弦波で表しています。羽音の高さは、はばたき数をそのまま周波数（230 Hz）として鳴らしています。</dd>
+        <dt>何を計算しているか</dt><dd>分解図は、各部位が本当の組み立ての向き（頭は前、翅は上、脚は下、腹部の節は後ろへ入れ子に）へ、外側の部位から順に離れていくように計算しています。翅の動きは、前後のストローク（振れ幅 90°）、周期が半分の上下のずれ（14°）、反転のたびに翅が立って裏返るひねり（90° ± 45°。どちらへ動くときも前縁が先に進み、迎え角は約45°）の3つの正弦波で表しています。羽音の高さは、はばたき数をそのまま周波数（230 Hz）として鳴らしています。</dd>
         <dt>省略・誇張していること</dt><dd>形は部位の位置関係と数が分かるように模式化したもので、解剖図の寸法ではありません。翅脈の数と走り方、脚の節の細部、口器の構造は簡略化しています。内臓は代表的なものだけで、マルピーギ管や生殖器、脂肪体は入れていません。はばたきの振幅・ひねりは文献の代表値で、飛び方によって変わります。数値はセイヨウミツバチの働き蜂の代表値です。</dd>
       </dl>
     </div>

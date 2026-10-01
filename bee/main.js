@@ -4,7 +4,7 @@ import {createIcons, Box, PanelTop, PanelLeft, LayoutGrid, ScanEye, RotateCcw} f
 import {mountNavigation, EMBED} from '../lib/navigation.js';
 import {createPaperMode} from '../lib/paper.js';
 import {buildBee, PART_INFO, LABELS, INNER_LABELS, MAT} from './build.js';
-import {PARTS, explodeOffset, wingPose, wingTip, WINGBEAT_HZ, FOREWING_MM, noteName, audible} from './model.js';
+import {PARTS, explodeOffset, explodeWorld, wingPose, wingTip, WINGBEAT_HZ, FOREWING_MM, noteName, audible} from './model.js';
 import '../lib/style.css';
 import '../lib/lab.css';
 
@@ -50,8 +50,10 @@ function updateGuides() {
   guides.visible = show; if (!show) return;
   const pos = guideGeo.attributes.position;
   guideTargets.forEach((t, i) => {
-    if (t.child) {t.obj.parent.localToWorld(wa.copy(t.obj.userData.basePos)); t.obj.getWorldPosition(wb);}
-    else {t.obj.parent.localToWorld(wa.copy(t.obj.userData.base)); t.obj.getWorldPosition(wb);}
+    // 線の始点は「いまの親の位置での、もとの座席」（頭についた部位は頭といっしょに動く）
+    const po = t.part.parent ? explodeWorld(PART_BY_ID[t.part.parent], explode) : [0, 0, 0];
+    if (t.child) {wa.copy(t.obj.userData.basePos); wa.x += po[0]; wa.y += po[1]; wa.z += po[2]; t.obj.parent.localToWorld(wa); t.obj.getWorldPosition(wb);}
+    else {wa.copy(t.obj.userData.base); wa.x += po[0]; wa.y += po[1]; wa.z += po[2]; t.obj.parent.localToWorld(wa); t.obj.getWorldPosition(wb);}
     pos.setXYZ(i * 2, wa.x, wa.y, wa.z); pos.setXYZ(i * 2 + 1, wb.x, wb.y, wb.z);
   });
   pos.needsUpdate = true; guides.computeLineDistances();
@@ -61,8 +63,9 @@ function applyExplode(t) {
     const g = bee.parts[p.id]; if (!g) continue;
     if (p.mirror) for (const c of g.children) {
       const side = Math.sign(c.userData.basePos.z || c.userData.side || 1), k = 1 + 0.14 * (c.userData.chain || 0);
-      const off = explodeOffset(p, t, side); c.position.set(c.userData.basePos.x + off[0] * k, c.userData.basePos.y + off[1] * k, c.userData.basePos.z + off[2] * k);
-    } else {const off = explodeOffset(p, t); g.position.set(g.userData.base.x + off[0], g.userData.base.y + off[1], g.userData.base.z + off[2]);}
+      const own = explodeOffset(p, t, side), po = p.parent ? explodeWorld(PART_BY_ID[p.parent], t, side) : [0, 0, 0];
+      c.position.set(c.userData.basePos.x + own[0] * k + po[0], c.userData.basePos.y + own[1] * k + po[1], c.userData.basePos.z + own[2] * k + po[2]);
+    } else {const off = explodeWorld(p, t); g.position.set(g.userData.base.x + off[0], g.userData.base.y + off[1], g.userData.base.z + off[2]);}
   }
 }
 
@@ -87,8 +90,8 @@ function layoutLabels() {
     if (!show) {for (let j = 0; j < 6; j++) pos.array[k + j] = 0; continue;}
     any = true;
     const pdef = PART_BY_ID[labelPartId(o.element.dataset.part)];
-    const off = pdef ? explodeOffset(pdef, explode, Math.sign(o.userData.target.z || 1)) : [0, 0, 0];
-    tmpOff.set(...off); if (pdef && !pdef.mirror) tmpOff.z = off[2];
+    const off = pdef ? explodeWorld(pdef, explode, Math.sign(o.userData.target.z || 1)) : [0, 0, 0];
+    tmpOff.set(...off);
     o.position.copy(o.userData.anchor).add(tmpOff).add(body.position);
     const tgt = o.userData.target.clone().add(tmpOff).add(body.position);
     pos.setXYZ(o.userData.leader * 2, tgt.x, tgt.y, tgt.z); pos.setXYZ(o.userData.leader * 2 + 1, o.position.x, o.position.y, o.position.z);
@@ -146,7 +149,7 @@ function describe(part) {
 }
 function focusPoint(part) {
   const l = [...LABELS, ...INNER_LABELS].find((x) => x[0] === part); if (!l) return null;
-  const pdef = PART_BY_ID[labelPartId(part)], off = pdef ? explodeOffset(pdef, explode, Math.sign(l[2][2] || 1)) : [0, 0, 0];
+  const pdef = PART_BY_ID[labelPartId(part)], off = pdef ? explodeWorld(pdef, explode, Math.sign(l[2][2] || 1)) : [0, 0, 0];
   return new T.Vector3(l[2][0] + off[0], l[2][1] + off[1], l[2][2] + off[2]).add(body.position);
 }
 function select(part, fly = true) {
@@ -226,13 +229,18 @@ function drawTrace(phase) {
   ctx.clearRect(0, 0, W, H); const cx = W / 2, cy = H * 0.55, S = W * 0.042;
   ctx.strokeStyle = line; ctx.lineWidth = 1; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.moveTo(30, cy); ctx.lineTo(W - 30, cy); ctx.stroke(); ctx.setLineDash([]);
   ctx.font = '500 13px JetBrains Mono, monospace'; ctx.fillStyle = muted; ctx.textAlign = 'left'; ctx.fillText('後', 30, cy - 10); ctx.textAlign = 'right'; ctx.fillText('前', W - 30, cy - 10);
-  ctx.textAlign = 'center'; ctx.fillText('打ち下ろし →', cx, cy + S * 2.6); ctx.fillText('← 打ち上げ', cx, cy - S * 2.1);
   ctx.strokeStyle = ink; ctx.lineWidth = 2.2; ctx.beginPath();
   for (let i = 0; i <= 240; i++) {const [x, y] = wingTip(i / 240); const px = cx + x * S, py = cy - y * S * 2.2; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);}
   ctx.stroke();
+  // 進む向きの矢印（4 か所）
+  for (const ph of [0.125, 0.375, 0.625, 0.875]) {
+    const [x0, y0] = wingTip(ph - 0.004), [x1, y1] = wingTip(ph + 0.004), px = cx + x1 * S, py = cy - y1 * S * 2.2, ang = Math.atan2(-(y1 - y0) * 2.2, x1 - x0);
+    ctx.fillStyle = ink; ctx.beginPath(); ctx.moveTo(px + Math.cos(ang) * 9, py + Math.sin(ang) * 9); ctx.lineTo(px + Math.cos(ang + 2.5) * 9, py + Math.sin(ang + 2.5) * 9); ctx.lineTo(px + Math.cos(ang - 2.5) * 9, py + Math.sin(ang - 2.5) * 9); ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle = muted; ctx.textAlign = 'center'; ctx.fillText('前へ振る半周期 ＝ 打ち下ろし', cx, cy + S * 2.6);
   const [x, y] = wingTip(phase % 1); ctx.fillStyle = acc; ctx.beginPath(); ctx.arc(cx + x * S, cy - y * S * 2.2, 6, 0, Math.PI * 2); ctx.fill();
   const pose = wingPose(phase % 1); ctx.fillStyle = ink; ctx.textAlign = 'left'; ctx.font = '500 14px JetBrains Mono, monospace';
-  ctx.fillText(`ストローク ${pose.stroke >= 0 ? '+' : ''}${pose.stroke.toFixed(0)}°  ひねり ${pose.pitch >= 0 ? '+' : ''}${pose.pitch.toFixed(0)}°`, 30, 26);
+  ctx.fillText(`ストローク ${pose.stroke >= 0 ? '+' : ''}${pose.stroke.toFixed(0)}°  翅の立ち ${pose.pitch.toFixed(0)}°`, 30, 26);
 }
 
 // ---- 登場: 分解された状態から組み上がる ----
