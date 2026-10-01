@@ -40,7 +40,8 @@ export function mountNavigation(current) {
   header.innerHTML = `<a class="brand" href="${base}"><span class="brand-name">いきもの3D</span><span class="brand-sub">LIVING ANATOMY<br>LAB</span></a><nav aria-label="デモを選択">` +
     items.map(([id, url, n, label]) => `<a href="${base}${url}" ${id === current ? 'aria-current="page"' : ''}><span>${n}</span>${label}</a>`).join('') +
     `</nav><button class="theme-toggle" type="button" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>`;
-  header.querySelector('[aria-current]')?.scrollIntoView({block: 'nearest', inline: 'center'});
+  const nav = header.querySelector('nav'), cur = header.querySelector('[aria-current]');
+  if (nav && cur) nav.scrollLeft = cur.offsetLeft - nav.clientWidth / 2 + cur.offsetWidth / 2;   // 縦のスクロール位置を動かさずに、ナビだけ横に寄せる
   applyTheme(currentTheme(), false);   // 選んだときだけ覚える（OS の設定に追従できるように）
   header.querySelector('.theme-toggle').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 }

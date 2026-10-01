@@ -35,6 +35,8 @@ document.querySelectorAll('.demo-card').forEach((c) => {const i = +c.dataset.i;
   c.addEventListener('focus', () => show(i));});
 document.querySelectorAll('#show-dots button').forEach((b) => (b.onclick = () => {hold = true; clearTimeout(timer); show(+b.dataset.i);}));
 document.querySelector('.show-stage').addEventListener('pointerdown', () => {hold = true; clearTimeout(timer);});
+addEventListener('blur', () => {if (document.activeElement === $('show-frame')) {hold = true; clearTimeout(timer);}});   // iframe の中をドラッグしたときも止める
+document.querySelectorAll('.demo-card img').forEach((img) => img.addEventListener('error', () => {const span = document.createElement('span'); span.textContent = img.closest('.demo-card').querySelector('h2').textContent; img.replaceWith(span);}));   // サムネイルがまだ無いときは名前を出す
 show(0); schedule();
 
 // フォークして別アカウントで公開しても、GitHub へのリンクがそのリポジトリを指すようにする

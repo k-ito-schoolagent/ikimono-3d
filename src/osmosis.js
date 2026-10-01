@@ -24,7 +24,7 @@ const drops = Array.from({length: N}, () => ({dir: new T.Vector3().randomDirecti
 // 状態
 let c = ISOTONIC, volume = 1, playing = !REDUCED_MOTION, burst = 0;
 function setConc(v) {
-  c = +v; $('conc').value = c; $('conc-value').innerHTML = `${c.toFixed(2)}<small>mol/L</small>`;
+  c = +v; $('conc').value = c; $('conc-value').innerHTML = `${c.toFixed(2)}<small>osmol/L</small>`;
   const t = tonicity(c); $('tonicity').textContent = t.label;
   $('note').textContent = t.water > 0 ? '外液の方がうすいので、水が細胞に入ってふくらむ。' : t.water < 0 ? '外液の方が濃いので、水が細胞から出て縮む。' : '水の出入りはつり合っていて、体積は変わらない。';
   document.querySelectorAll('[data-c]').forEach((b) => b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.c - c) < 1e-9)));

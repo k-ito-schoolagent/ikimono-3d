@@ -1,5 +1,5 @@
 /* いきもの3D のデザイントークン。紙とインク、朱のアクセント。3D の画面だけが暗い。 */
-:root{--paper:#f4efe5;--paper-2:#ece5d7;--paper-3:#e3dbcb;--ink:#28231f;--muted:#6f665c;--line:#d7cdbc;--line-strong:#b9ad99;--accent:#b5402c;--accent-ink:#fff6ef;--accent-soft:#f0ddd5;--surface:#1d1916;--surface-2:#2a2420;--surface-line:#3f362f;--on-surface:#efe7d9;--on-surface-muted:#b3a697;--artery:#d7363d;--vein:#3f63b8;--conduction:#f2c14e;--focus:#b5402c;--radius:4px;--serif:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;--sans:'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;--mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;color-scheme:light}
+:root{--paper:#f4efe5;--paper-2:#ece5d7;--paper-3:#e3dbcb;--ink:#28231f;--muted:#655c52;--line:#d7cdbc;--line-strong:#b9ad99;--accent:#b5402c;--accent-ink:#fff6ef;--accent-soft:#f0ddd5;--surface:#1d1916;--surface-2:#2a2420;--surface-line:#3f362f;--on-surface:#efe7d9;--on-surface-muted:#b3a697;--artery:#d7363d;--vein:#3f63b8;--conduction:#f2c14e;--focus:#b5402c;--radius:4px;--serif:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;--sans:'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;--mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;color-scheme:light}
 :root[data-theme=dark]{--paper:#171412;--paper-2:#1f1b18;--paper-3:#2a2521;--ink:#ece4d6;--muted:#a69b8d;--line:#3a332c;--line-strong:#564c42;--accent:#d8664f;--accent-ink:#1a110e;--accent-soft:#3a241e;--surface:#100e0d;--surface-2:#1a1614;--surface-line:#332c27;--on-surface:#efe7d9;--on-surface-muted:#a2968a;--focus:#d8664f;color-scheme:dark}
 *{box-sizing:border-box}
 html{font-family:var(--sans);color:var(--ink);background:var(--paper);font-synthesis:none;-webkit-text-size-adjust:100%}
@@ -53,7 +53,7 @@ h1{font-size:clamp(28px,3vw,44px);line-height:1.35}
 .camera-extra{position:absolute;right:20px;bottom:88px;display:grid;grid-template-columns:repeat(2,44px);gap:8px;z-index:2}
 .camera-extra button{font-size:18px}
 .mode-row{position:absolute;left:22px;top:62px;display:flex;gap:2px;border:1px solid var(--surface-line);border-radius:var(--radius);padding:3px;background:var(--surface-2);z-index:2}
-.mode-row button{border:0;font-size:12px;min-height:34px;padding:0 13px;color:var(--on-surface-muted);letter-spacing:.04em}
+.mode-row button{border:0;font-size:12px;min-height:38px;padding:0 13px;color:var(--on-surface-muted);letter-spacing:.04em}
 .mode-row button[aria-pressed=true]{background:var(--on-surface);color:var(--surface)}
 .mode-row button:hover{background:#3b322c;color:var(--on-surface)}
 .mode-row button[aria-pressed=true]:hover{background:#fff}
@@ -94,7 +94,7 @@ h2{font-size:18px;line-height:1.5}
 .fact{font-size:12px;line-height:1.8;color:var(--muted);margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--line)}
 .fact b{color:var(--ink);font-weight:600;font-family:var(--mono);font-size:10px;letter-spacing:.14em;margin-right:8px}
 .part-selector{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 0}
-.part-selector button{padding:0 11px;font-size:12px;min-height:34px;border-color:var(--line)}
+.part-selector button{padding:0 11px;font-size:12px;min-height:38px;border-color:var(--line)}
 .part-selector button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .chart{width:100%;height:auto;display:block;margin:6px 0 0}
 .chart-legend{display:flex;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted);margin-top:8px;flex-wrap:wrap}

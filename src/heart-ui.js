@@ -1,13 +1,23 @@
 // 2D の表示: 心電図モニター、圧力・容積のグラフ、血液の通り道の模式図、心周期の5つの期
 import {PHASES} from './heart-model.js';
 
-const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const cssCache = {theme: null, values: {}};
+const css = (name) => {
+  const theme = document.documentElement.dataset.theme || '';
+  if (cssCache.theme !== theme) {cssCache.theme = theme; cssCache.values = {};}
+  if (!(name in cssCache.values)) cssCache.values[name] = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return cssCache.values[name];
+};
 
 // 一定時間ぶんの履歴（シミュレーション時間で並べる）
 export function createHistory(seconds = 2.6) {
   const buf = [];
   return {
-    push(t, s) {buf.push({t, ecg: s.ecg, lv: s.pressures.lv, ao: s.pressures.aorta, vol: s.volumes.lv}); while (buf.length && buf[0].t < t - seconds) buf.shift();},
+    push(t, s) {
+      if (buf.length && buf[buf.length - 1].t === t) return;                 // 停止中は増やさない
+      buf.push({t, ecg: s.ecg, lv: s.pressures.lv, ao: s.pressures.aorta, vol: s.volumes.lv});
+      while (buf.length && (buf[0].t < t - seconds || buf.length > 4000)) buf.shift();
+    },
     reset() {buf.length = 0;}, get items() {return buf;}, seconds,
   };
 }
@@ -53,6 +63,8 @@ export function drawChart(canvas, history, now, state) {
 }
 
 // 教科書の模式図。肺が上、全身が下。見る人の左が右心（解剖図の向き）
+// 弁: 2枚の弁膜。閉じると流れをふさぐ横一文字、開くと流れの向き（o = 1 で下向き、-1 で上向き）へ倒れる
+const valve = (id, x, y, o) => `<g id="${id}" class="valve" style="--o:${o}"><line class="l" x1="${x - 15}" y1="${y}" x2="${x}" y2="${y}" style="transform-origin:${x - 15}px ${y}px"/><line class="r" x1="${x + 15}" y1="${y}" x2="${x}" y2="${y}" style="transform-origin:${x + 15}px ${y}px"/></g>`;
 export function buildSchematic(host) {
   host.innerHTML = `<svg class="schematic" viewBox="0 0 520 470" role="img" aria-label="血液の通り道の模式図。右心室から肺へ行って左心房に戻る肺循環と、左心室から全身へ行って右心房に戻る体循環">
   <rect class="organ" x="150" y="18" width="220" height="64" rx="32"/><text x="260" y="44" text-anchor="middle">肺</text><text class="en" x="260" y="64" text-anchor="middle">GAS EXCHANGE · 静脈血 → 動脈血</text>
@@ -67,8 +79,7 @@ export function buildSchematic(host) {
   <g id="s-la"><rect class="box" x="300" y="170" width="100" height="60" rx="8"/><text x="350" y="196" text-anchor="middle">左心房</text><text class="en" x="350" y="214" text-anchor="middle">LA</text></g>
   <g id="s-rv"><rect class="box" x="120" y="240" width="100" height="60" rx="8"/><text x="170" y="266" text-anchor="middle">右心室</text><text class="en" x="170" y="284" text-anchor="middle">RV</text></g>
   <g id="s-lv"><rect class="box" x="300" y="240" width="100" height="60" rx="8"/><text x="350" y="266" text-anchor="middle">左心室</text><text class="en" x="350" y="284" text-anchor="middle">LV</text></g>
-  <line id="s-tri" class="valve" x1="155" y1="235" x2="185" y2="235"/><line id="s-mit" class="valve" x1="335" y1="235" x2="365" y2="235"/>
-  <line id="s-pul" class="valve" x1="225" y1="226" x2="255" y2="226"/><line id="s-aor" class="valve" x1="335" y1="320" x2="365" y2="320"/>
+  ${valve('s-tri', 170, 235, 1)}${valve('s-mit', 350, 235, 1)}${valve('s-pul', 240, 226, -1)}${valve('s-aor', 350, 320, 1)}
   <text class="en" x="248" y="150">肺動脈</text><text class="en" x="360" y="112">肺静脈</text>
   <text class="en" x="360" y="356">大動脈</text><text class="en" x="84" y="300" text-anchor="end">大静脈</text>
   <text class="en" x="108" y="238" text-anchor="end">三尖弁</text><text class="en" x="412" y="238">僧帽弁</text>
@@ -85,8 +96,8 @@ export function buildSchematic(host) {
       const atria = state.phase === 0, vent = state.phase === 1 || state.phase === 2;
       for (const k of ['ra', 'la']) boxes[k].firstElementChild.classList.toggle('active', atria);
       for (const k of ['rv', 'lv']) boxes[k].firstElementChild.classList.toggle('active', vent);
-      valves.tri.classList.toggle('closed', !state.valves.tricuspid); valves.mit.classList.toggle('closed', !state.valves.mitral);
-      valves.pul.classList.toggle('closed', !state.valves.pulmonary); valves.aor.classList.toggle('closed', !state.valves.aortic);
+      valves.tri.classList.toggle('open', state.valves.tricuspid); valves.mit.classList.toggle('open', state.valves.mitral);
+      valves.pul.classList.toggle('open', state.valves.pulmonary); valves.aor.classList.toggle('open', state.valves.aortic);
     },
     setTempo(hr, tempo, playing) {svg.style.setProperty('--dur', `${(84 / hr) / Math.max(0.02, tempo)}s`); svg.style.setProperty('--play', playing ? 'running' : 'paused'); host.querySelectorAll('.dots').forEach((d) => (d.style.animationPlayState = playing ? 'running' : 'paused'));},
   };

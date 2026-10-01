@@ -21,9 +21,9 @@ test('安静時 (70 bpm) の代表値: 心室収縮期 約0.3 s、1回拍出量 
   const tm = cycleTiming(70), sv = strokeVolume(70), ao = aorticPressure(70);
   assert.ok(Math.abs(tm.ventEnd - tm.ventStart - 0.3) < 0.03);
   assert.ok(Math.abs(tm.pr - 0.16) < 0.01, 'PR 時間 約0.16 s');
-  assert.ok(Math.abs(sv.sv - 70) < 5);
-  assert.ok(Math.abs(sv.cardiacOutput - 5) < 0.5);
-  assert.ok(Math.abs(ao.systolic - 120) < 6 && Math.abs(ao.diastolic - 80) < 3);
+  assert.ok(Math.abs(sv.sv - 70) < 1);
+  assert.ok(Math.abs(sv.cardiacOutput - 4.9) < 0.1);
+  assert.ok(Math.abs(ao.systolic - 120) < 1 && Math.abs(ao.diastolic - 80) < 1);
 });
 
 test('心拍数が上がると心周期と心室収縮期は短くなり、拡張期はそれ以上に短くなる', () => {
@@ -43,6 +43,7 @@ test('心拍出量 = 心拍数 × 1回拍出量。運動で増え、180 bpm で�
     assert.ok(sv.sv > 0 && sv.edv > sv.esv && sv.esv > 0);
   }
   assert.ok(strokeVolume(160).cardiacOutput > 2 * strokeVolume(70).cardiacOutput);
+  assert.ok(strokeVolume(160).sv > strokeVolume(70).sv && strokeVolume(110).sv > strokeVolume(70).sv, '運動のプリセットでは 1回拍出量も増える');
   assert.ok(strokeVolume(180).sv < strokeVolume(140).sv, '充満の時間が短すぎると 1回拍出量が減る');
   assert.ok(strokeVolume(180).cardiacOutput > strokeVolume(140).cardiacOutput);
 });
@@ -85,7 +86,26 @@ test('心室容積: 等容性収縮期は EDV、等容性弛緩期は ESV、駆�
     const first = ss[0], last = ss[ss.length - 1];
     assert.ok(Math.abs(first.volumes.lv - last.volumes.lv) < 0.08 * (first.volumes.edv - first.volumes.esv), '周期の境目で連続');
     assert.ok(Math.abs(first.volumes.la - last.volumes.la) < 4);
-    assert.equal(first.volumes.lv, first.volumes.rv, '左右の心室の容積変化は等しい');
+    for (const s of ss) {assert.equal(s.volumes.lv, s.volumes.rv, '左右の心室の容積変化は等しい'); assert.ok(Math.abs(s.pressures.rv - 0.2 * s.pressures.lv) < 1e-9, '右心室の圧は左心室の 1/5');}
+  }
+});
+
+test('期の順番: 1周期に 等容性収縮期→駆出期→等容性弛緩期→充満期→心房収縮期 が1回ずつ、この順で現れる', () => {
+  for (const hr of hrs) {
+    const seq = [];
+    for (const s of samples(hr, 2000)) if (seq[seq.length - 1] !== s.phase) seq.push(s.phase);
+    assert.deepEqual(seq, [1, 2, 3, 4, 0], `${hr} bpm: ${seq.join('→')}`);
+  }
+});
+
+test('弁は圧力の差と一致する: 僧帽弁が開く ⇔ 左心房圧 ≥ 左心室圧、大動脈弁が開く ⇔ 左心室圧 ≥ 大動脈圧（切り替わりの前後 5 ms は除く）', () => {
+  for (const hr of hrs) {
+    const tm = cycleTiming(hr), edges = [tm.ejectStart, tm.ventEnd, tm.relaxEnd, tm.ventStart, tm.rr];
+    for (const s of samples(hr, 1000)) {
+      if (edges.some((e) => Math.abs(s.t - e) < 0.008)) continue;
+      assert.equal(s.valves.mitral, s.pressures.la >= s.pressures.lv, `僧帽弁 ${hr} bpm t=${s.t.toFixed(3)} la=${s.pressures.la.toFixed(1)} lv=${s.pressures.lv.toFixed(1)}`);
+      assert.equal(s.valves.aortic, s.pressures.lv >= s.pressures.aorta, `大動脈弁 ${hr} bpm t=${s.t.toFixed(3)} lv=${s.pressures.lv.toFixed(1)} ao=${s.pressures.aorta.toFixed(1)}`);
+    }
   }
 });
 

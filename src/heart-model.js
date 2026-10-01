@@ -22,8 +22,8 @@ export function cycleTiming(hr) {
   const qrsOnset = rr - delay;                                     // 次の心室収縮の少し前に QRS
   const pOnset = qrsOnset - pr;                                    // 洞房結節の興奮（P 波の始まり）
   const atrialDur = Math.min(0.1, 0.25 * rr);
-  const atrialStart = Math.max(pOnset + 0.03, relaxEnd);           // 心房の収縮は房室弁が開いてから
-  const atrialEnd = Math.min(atrialStart + atrialDur, rr - 0.005);
+  const atrialEnd = rr - 0.005;                                    // 心房の収縮が終わると、すぐ心室が収縮する
+  const atrialStart = Math.max(relaxEnd + 0.02, atrialEnd - atrialDur);   // 心房の収縮は房室弁が開いてから（受動的な充満を少しは残す）
   const qt = 0.4 * Math.sqrt(rr);                                  // QT 時間（Bazett）
   return {hr, rr, delay, pr, pOnset, qrsOnset, ventStart: 0, ejectStart: isoContract, ventEnd: ventDur, relaxEnd, atrialStart, atrialEnd, diastoleDur, fillWindow: atrialEnd - relaxEnd, qt, tCenter: wrap(qrsOnset + qt - 0.08, rr)};
 }
@@ -32,9 +32,10 @@ export function cycleTiming(hr) {
 // 心拍数が高すぎると充満の時間が足りず EDV が減る（1回拍出量が頭打ちになり、やがて減る）。
 export function strokeVolume(hr) {
   const tm = cycleTiming(hr);
-  const c = clamp((tm.hr - 60) / 120, 0, 1);                      // 交感神経の緊張 0〜1
+  const c = clamp((tm.hr - 70) / 110, 0, 1);                      // 交感神経の緊張 0〜1（安静 70 bpm で 0）
   const fillPenalty = Math.max(0, 0.16 - tm.fillWindow) * 400;    // 充満の時間が 0.16 s を切ると充満不足
-  const edv = 120 + 10 * c - fillPenalty, esv = 50 - 20 * c;
+  const slowFill = 15 * clamp((60 - tm.hr) / 20, 0, 1);           // 心拍数が低いと充満の時間が長く EDV が少し増える
+  const edv = 120 + 10 * c + slowFill - fillPenalty, esv = 50 - 20 * c;
   const sv = edv - esv;
   return {edv, esv, sv, cardiacOutput: (sv * tm.hr) / 1000, sympathetic: c, kickFraction: 0.2 + 0.2 * c};  // 心拍出量 [L/min]
 }
@@ -55,7 +56,7 @@ export function stateAt(time, hr) {
   if (t < tm.ejectStart) phase = 1;
   else if (t < tm.ventEnd) phase = 2;
   else if (t < tm.relaxEnd) phase = 3;
-  else if (t >= tm.atrialStart && t < tm.atrialEnd) phase = 0;
+  else if (t >= tm.atrialStart) phase = 0;                        // 心房収縮期は次の心室収縮まで
   else phase = 4;
   const avOpen = phase === 0 || phase === 4, semilunarOpen = phase === 2;
   const ejectT = clamp((t - tm.ejectStart) / Math.max(1e-3, tm.ventEnd - tm.ejectStart), 0, 1);
@@ -85,23 +86,23 @@ export function stateAt(time, hr) {
   let lvp, aop;
   if (phase === 1) lvp = 8 + (ao.diastolic - 8) * smooth(t / Math.max(1e-3, tm.ejectStart));
   else if (phase === 2) lvp = ao.diastolic + pulse * ejectShape(ejectT);
-  else if (phase === 3) {const s = smooth((t - tm.ventEnd) / Math.max(1e-3, tm.relaxEnd - tm.ventEnd)); lvp = notch * (1 - s) + 5 * s;}
-  else lvp = 5 + 3 * smooth(kickX);
-  if (phase === 2) aop = Math.max(ao.diastolic, lvp - 2);
-  else aop = ao.diastolic + (notch - 2 - ao.diastolic) * Math.exp((-3 * wrap(t - tm.ventEnd, tm.rr)) / Math.max(1e-3, tm.diastoleDur));
-  const lap = 6 + 4 * smooth(kickX) * (t >= tm.atrialStart ? 1 : 0);
+  else if (phase === 3) {const x = (t - tm.ventEnd) / Math.max(1e-3, tm.relaxEnd - tm.ventEnd), s = 1 - (1 - x) * (1 - x); lvp = notch * (1 - s) + 6 * s;}   // 弁が閉じた直後は速く下がり、左心房の圧（6）まで落ちると房室弁が開く
+  else lvp = 5 + (1 - fillX) + 3 * smooth(kickX);                  // 充満中は心房よりわずかに低い
+  if (phase === 2) aop = lvp;                                       // 駆出中は弁が開いていて、心室と大動脈はほぼ同じ圧
+  else aop = ao.diastolic + (notch - ao.diastolic) * Math.exp((-3 * wrap(t - tm.ventEnd, tm.rr)) / Math.max(1e-3, tm.diastoleDur));
+  const lap = t < tm.ejectStart ? 6 + 4 * (1 - smooth(t / Math.max(1e-3, tm.ejectStart))) : 6 + 4 * smooth(kickX) * (t >= tm.atrialStart ? 1 : 0);   // 心房収縮で上がり、心室が収縮を始めるともとに戻る
   const scaleR = 0.2;                                               // 右心系は左心系の約 1/5 の圧（肺循環は低圧）。容積の変化は左右で等しい
 
   // 心電図（Ⅱ誘導の形を模した合成波形）
   const ecg = 0.15 * bell(t, tm.pOnset + 0.045, 0.022, tm.rr) - 0.12 * bell(t, tm.qrsOnset + 0.02, 0.006, tm.rr) + bell(t, tm.qrsOnset + 0.04, 0.009, tm.rr) - 0.25 * bell(t, tm.qrsOnset + 0.062, 0.007, tm.rr) + 0.3 * bell(t, tm.tCenter, 0.045, tm.rr);
 
-  // 刺激伝導系: 洞房結節 → 心房筋（P 波）→ 房室結節（遅い）→ ヒス束・プルキンエ線維（速い）→ 心室筋（QRS）
-  const sinceP = wrap(t - tm.pOnset, tm.rr), atriumLen = 0.08, avLen = tm.pr - atriumLen, purkinjeLen = 0.04, ventLen = 0.05;
+  // 刺激伝導系: 洞房結節 → 心房筋（P 波）→ 房室結節（遅い）→ ヒス束・プルキンエ線維（速い。PR 区間の終わり）→ 心室筋（QRS）
+  const sinceP = wrap(t - tm.pOnset, tm.rr), atriumLen = 0.06, purkinjeLen = 0.03, avEnd = tm.pr - purkinjeLen, ventLen = 0.05;
   let conduction;
   if (sinceP < atriumLen) conduction = {segment: 'atrium', progress: sinceP / atriumLen};
-  else if (sinceP < atriumLen + avLen) conduction = {segment: 'av', progress: (sinceP - atriumLen) / avLen};
-  else if (sinceP < tm.pr + purkinjeLen) conduction = {segment: 'purkinje', progress: (sinceP - tm.pr) / purkinjeLen};
-  else if (sinceP < tm.pr + purkinjeLen + ventLen) conduction = {segment: 'ventricle', progress: (sinceP - tm.pr - purkinjeLen) / ventLen};
+  else if (sinceP < avEnd) conduction = {segment: 'av', progress: (sinceP - atriumLen) / (avEnd - atriumLen)};
+  else if (sinceP < tm.pr) conduction = {segment: 'purkinje', progress: (sinceP - avEnd) / purkinjeLen};
+  else if (sinceP < tm.pr + ventLen) conduction = {segment: 'ventricle', progress: (sinceP - tm.pr) / ventLen};
   else conduction = {segment: 'rest', progress: 0};
 
   // 流れの強さ（粒子の速さに使う 0〜1）。動脈は駆出期に強く、毛細血管・静脈は大動脈の弾性のおかげでほぼ一定

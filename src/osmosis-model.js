@@ -2,7 +2,7 @@
 // 細胞膜は水だけを通す（半透膜）とし、細胞の体積はボイル＝ファントホッフの関係 V = Vb + (V0 − Vb) × C0 / C に従う。
 // Vb は水が出入りしない部分（タンパク質など）、C0 は等張液の濃度、C は外液の濃度。
 
-export const ISOTONIC = 0.3;          // 等張液のモル濃度 [mol/L]（ヒトの細胞ではおよそ 0.3 mol/L、質量パーセント濃度 0.9 % の食塩水に相当）
+export const ISOTONIC = 0.3;          // 等張液の濃度 [osmol/L]（溶けている粒子の総濃度。0.9 % の食塩水は NaCl が 2 つのイオンに分かれるので約 0.3 osmol/L）
 export const INACTIVE_FRACTION = 0.4; // 水が出入りしない体積の割合（赤血球ではおよそ 0.4）
 export const LYSIS_RATIO = 1.7;       // 体積がこの倍率を超えると膜が耐えきれず破れる（溶血）とみなす
 export const C_MIN = 0.05, C_MAX = 0.9;

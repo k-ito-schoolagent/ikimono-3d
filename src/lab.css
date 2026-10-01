@@ -22,19 +22,20 @@
 .lab-note .full{grid-column:1/-1}
 .schematic{width:100%;height:auto;display:block;max-width:560px;margin:4px auto 0;font-family:var(--sans)}
 .schematic text{font-size:12px;fill:var(--ink)}
-.schematic .en{font-family:var(--mono);font-size:8px;fill:var(--muted);letter-spacing:.08em}
+.schematic .en{font-family:var(--mono);font-size:9px;fill:var(--muted);letter-spacing:.06em}
 .schematic .box{fill:var(--paper-3);stroke:var(--line-strong);stroke-width:1}
 .schematic .box.active{stroke:var(--ink);stroke-width:2}
 .schematic .organ{fill:none;stroke:var(--line-strong);stroke-width:1;stroke-dasharray:3 3}
 .schematic .flow{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .schematic .flow.a{stroke:var(--artery)}.schematic .flow.v{stroke:var(--vein)}
 .schematic .dots{fill:none;stroke:var(--paper);stroke-width:1.6;stroke-dasharray:1.5 7;stroke-linecap:round;animation:flow var(--dur,1.2s) linear infinite}
-.schematic .valve{stroke:var(--ink);stroke-width:2;transition:transform .2s;transform-box:fill-box;transform-origin:center}
-.schematic .valve.closed{transform:rotate(90deg)}
+.schematic .valve line{stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;transition:transform .2s;transform-box:view-box}
+.schematic .valve.open .l{transform:rotate(calc(60deg * var(--o)))}
+.schematic .valve.open .r{transform:rotate(calc(-60deg * var(--o)))}
 .schematic .cap{stroke-dasharray:2 2;stroke:var(--muted);stroke-width:1;fill:none}
 @keyframes flow{to{stroke-dashoffset:-8.5}}
 .phase-list{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);margin-top:6px}
-.phase-list button{text-align:left;border:0;border-top:2px solid transparent;border-radius:0;padding:14px 10px 12px;display:block;min-height:0;margin-top:-1px}
+.phase-list button{text-align:left;border:0;border-top:2px solid transparent;border-radius:0;padding:14px 10px 12px;display:block;min-height:44px;margin-top:-1px}
 .phase-list button b{display:block;font-family:var(--serif);font-size:15px;font-weight:600;margin-bottom:6px}
 .phase-list button small{display:block;font-size:12px;line-height:1.7;color:var(--muted)}
 .phase-list button .no{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);display:block;margin-bottom:8px}

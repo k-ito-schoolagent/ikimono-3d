@@ -32,7 +32,7 @@ const plane = new T.Plane(new T.Vector3(0, 0, -1), 30);        // z ≤ constant
 const vessels = buildVessels(stage.group);
 ['aorta', 'vc', 'aorta', 'aorta', 'aorta', 'vc', 'pa', 'pa', 'pv', 'pv', 'pv', 'pv'].forEach((p, i) => stage.pick(vessels.group.children[i], p));
 const organs = buildOrgans(stage.group);
-organs.group.children.forEach((m, i) => stage.pick(m, i < 2 ? 'lung' : 'body'));
+organs.group.children.forEach((m, i) => stage.pick(m, i < 2 || i === 4 || i === 5 ? 'lung' : 'body'));   // 肺×2・上体・下体・肺の毛細血管×2・全身の毛細血管×2
 const segments = buildSegments();
 const flow = createFlow(stage.group, segments, EMBED ? 900 : 1400);
 flow.material.clippingPlanes = [plane];
@@ -117,7 +117,8 @@ function layoutLabels() {
     for (let j = 0; j < 6; j++) pos.array[k + j] = show ? leaderVisible[k + j] : 0;   // 隠すときは線を点にする
     if (!show) continue; anyLeader = true;
     sv2.copy(o.position).project(stage.camera);
-    items.push({o, x: ((sv2.x + 1) / 2) * W, y: ((1 - sv2.y) / 2) * H, w: o.element.offsetWidth || 80, dy: 0});
+    if (!o.userData.w) o.userData.w = o.element.offsetWidth || 0;                                   // 幅は一度だけ測る（毎フレームのレイアウト計算を避ける）
+    items.push({o, x: ((sv2.x + 1) / 2) * W, y: ((1 - sv2.y) / 2) * H, w: o.userData.w || 80, dy: 0});
   }
   pos.needsUpdate = true; leaders.visible = anyLeader;
   items.sort((a, b) => a.y - b.y);
@@ -138,6 +139,7 @@ function applyMode(m, instant = false) {
   mode = m;
   document.querySelectorAll('[data-render]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.render === m)));
   document.querySelector('.viewport').classList.toggle('paper', m === 'schematic');
+  $('run-status').textContent = playing ? (tempo < 0.999 ? `スロー ${tempoLabel()}` : '実時間で再生中') : '停止中';
   if (!heartReady) return;
   const schematic = m === 'schematic';
   chamberMesh.material = schematic ? schematicMat : heartMat;
@@ -147,7 +149,6 @@ function applyMode(m, instant = false) {
   uniforms.uVesselAlpha.value = m === 'xray' ? 0.75 : 0.55;
   if (instant) {xrayMix = m === 'xray' ? 1 : 0; bgMix = schematic ? 1 : 0; cutCurrent = m === 'section' ? cutZ : 30;}
   organs.group.visible = true;
-  $('run-status').textContent = playing ? (tempo < 0.999 ? `スロー ${tempoLabel()}` : '実時間で再生中') : '停止中';
 }
 const MODES = ['solid', 'xray', 'section', 'schematic'];
 document.querySelectorAll('[data-render]').forEach((b) => (b.onclick = () => applyMode(b.dataset.render)));
@@ -200,7 +201,7 @@ function setTempo(v) {tempo = Math.pow(50, v - 1); $('tempo').value = v; $('temp
 $('tempo').oninput = (e) => setTempo(+e.target.value);
 function setPlaying(p) {playing = p; stepTarget = null; $('play').textContent = playing ? '停止' : '再生'; applyMode(mode); schematic.setTempo(hr, tempo, playing);}
 $('play').onclick = () => setPlaying(!playing);
-$('step').onclick = () => {const rr = cycleTiming(hr).rr; stepTarget = (Math.floor(simT / rr + 1e-6) + 1) * rr; playing = true; $('play').textContent = '停止';};
+$('step').onclick = () => {const rr = cycleTiming(hr).rr; setPlaying(true); stepTarget = (Math.floor(simT / rr + 1e-6) + 1) * rr;};
 for (const key of ['flow', 'conduction', 'labels']) {$(`show-${key}`).checked = toggles[key]; $(`show-${key}`).onchange = (e) => (toggles[key] = e.target.checked);}
 const phaseList = buildPhaseList($('phase-list'), (phase) => {
   const tm = cycleTiming(hr), starts = {1: 0, 2: tm.ejectStart, 3: tm.ventEnd, 4: tm.relaxEnd, 0: tm.atrialStart};
@@ -210,12 +211,16 @@ const phaseList = buildPhaseList($('phase-list'), (phase) => {
 const schematic = buildSchematic($('schematic'));
 const history = createHistory(2.6);
 setHr(70, 'rest'); setTempo(1); $('play').textContent = playing ? '停止' : '再生';
-document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => document.querySelectorAll('[data-view]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))));
+const pressView = (name) => document.querySelectorAll('[data-view]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.view === name)));
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => pressView(b.dataset.view)));
+$('reset-view').addEventListener('click', () => pressView('iso'));
+pressView('iso');
 
 // UI を隠す（きれいな画面録画のため）
 function setClean(c) {clean = c; document.querySelector('.viewport').classList.toggle('clean', c);}
 $('ui-restore').onclick = () => setClean(false);
 addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;                                                 // Cmd+R などのブラウザ操作には触らない
   if (e.target instanceof Element && e.target.matches('input,select,textarea') ) return;          // 入力中は何もしない
   if (e.target instanceof Element && e.target.matches('button') && e.key === ' ') return;          // ボタンの上の space はボタンに任せる
   if (e.key === ' ') {e.preventDefault(); setPlaying(!playing);}
@@ -289,5 +294,5 @@ stage.animate((dt) => {
   schematic.update(state);
   layoutLabels();
 });
-// 開発用: ブラウザのコンソールから材質やユニフォームを触れるようにする
-window.__dbg = {stage, uniforms, heartMat, get chamberMesh() {return chamberMesh;}, applyMode, select, setHr, setTempo, setPlaying, getState: () => state};
+// 開発用: ブラウザのコンソールから材質やユニフォームを触れるようにする（開発サーバーのときだけ）
+if (import.meta.env.DEV) window.__dbg = {stage, uniforms, heartMat, get chamberMesh() {return chamberMesh;}, applyMode, select, setHr, setTempo, setPlaying, getState: () => state};

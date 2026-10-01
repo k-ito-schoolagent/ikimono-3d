@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#1d1916">
+<meta name="theme-color" content="#f4efe5">
 <title>心臓と血液循環 / いきもの3D</title>
 <meta name="description" content="ヒトの心臓を3Dで動かして、4つの部屋と弁、刺激伝導系、肺循環と体循環を学ぶ。心拍数を変えて、弁の開閉と血液の流れをスローで観察できる高校生物向け教材。">
+<script>try{var t=localStorage.getItem('ikimono-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23b5402c' d='M16 29 5 18a6.5 6.5 0 0 1 9.2-9.2L16 10.6l1.8-1.8A6.5 6.5 0 0 1 27 18z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,8 +94,8 @@
     <div class="assumptions">
       <h2>モデルの前提</h2>
       <dl>
-        <dt>何を計算しているか</dt><dd>心拍数から心周期の各期の長さ（心室収縮期は安静時0.3秒で、心拍数が上がると短くなる）、心室と心房の容積、左心室・大動脈・左心房の圧力、弁の開閉、心電図の形、刺激伝導系の興奮の位置を求めています。1回拍出量は安静時70 mLで、交感神経の緊張で増え、心拍数が高すぎると充満の時間が足りずに頭打ちになります。心拍出量 = 心拍数 × 1回拍出量。</dd>
-        <dt>省略・誇張していること</dt><dd>数値はヒト成人の代表値です。右心系の圧は左心系の1/5として表示し、容積の変化は左右で等しいとしています。血管の抵抗、静脈還流の変化、呼吸の影響、冠状動脈、心臓の捻れる動きは含みません。形は部屋の位置関係と壁の厚さの違いが分かるように模式化したもので、解剖図の寸法ではありません。血液の粒の数と速さは観察用の誇張です。</dd>
+        <dt>何を計算しているか</dt><dd>心拍数から心周期の各期の長さ（心室収縮期は安静時0.3秒で、心拍数が上がると短くなる）、心室と心房の容積、左心室・大動脈・左心房の圧力、弁の開閉、心電図の形、刺激伝導系の興奮の位置を求めています。1回拍出量は安静時70 mLで、交感神経の緊張（70 bpm を超えると心拍数とともに強くなるとみなす）で増え、心拍数が高すぎると充満の時間が足りずに頭打ちになります。心拍出量 = 心拍数 × 1回拍出量。</dd>
+        <dt>省略・誇張していること</dt><dd>数値はヒト成人の代表値です。右心系の圧は左心系の1/5として計算し（画面には出していません）、容積の変化は左右で等しいとしています。血管の抵抗と血圧の調節、運動時の静脈還流の増加（心拍数が低いときに EDV が少し増える以外）、呼吸の影響、冠状動脈、心臓の捻れる動きは含みません。形は部屋の位置関係と壁の厚さの違いが分かるように模式化したもので、解剖図の寸法ではありません。血液の粒の数と速さは観察用の誇張です。</dd>
         <dt>画面の約束</dt><dd>酸素の多い血液（動脈血）は赤、少ない血液（静脈血）は青。興奮の伝わりは黄色。断面は心臓を縦に切って、心室中隔と壁の厚さが見える面です。</dd>
       </dl>
     </div>
