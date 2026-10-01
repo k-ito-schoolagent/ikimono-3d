@@ -108,7 +108,7 @@ void main(){
   col = mix(col, vec3(0.93, 0.62, 0.5), max(isTarget, isSel) * 0.35);
   float flash = dot(vLobe, vec4(uFlash[0], uFlash[1], uFlash[2], uFlash[3]));
   col = mix(col, vec3(0.95, 0.76, 0.3), flash * 0.5);
-  col = mix(col, col * 0.55, uDim * (1.0 - max(isTarget, isSel)));
+  col = mix(col, uPaper, 0.65 * uDim * (1.0 - max(isTarget, isSel)));   // 線画では暗くせず、紙に溶かして薄くする
   gl_FragColor = vec4(col, 1.0);
 }`,
     side: T.DoubleSide, clipping: true,
