@@ -1,6 +1,9 @@
 .home .intro{padding:40px 0 28px}
 .home .count{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.14em;margin:0 0 12px}
-.demo-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.demo-list{display:grid;gap:34px}
+.demo-group .group-title{display:flex;align-items:baseline;gap:12px;font-size:18px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.demo-group .group-title small{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.demo-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
 .demo-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:8px;overflow:hidden;color:inherit;text-decoration:none;background:var(--paper-2);transition:border-color .15s,transform .15s}
 .demo-card .thumb{display:grid;place-items:center;aspect-ratio:16/10;background:var(--surface);color:var(--on-surface);font-family:var(--serif);font-size:16px}
 .demo-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}

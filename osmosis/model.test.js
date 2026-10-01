@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {relativeVolume, tonicity, lyses, step, ISOTONIC, LYSIS_RATIO} from './osmosis-model.js';
+import {relativeVolume, tonicity, lyses, step, ISOTONIC, LYSIS_RATIO} from './model.js';
 
 test('等張液では体積が変わらない', () => {
   assert.ok(Math.abs(relativeVolume(ISOTONIC) - 1) < 1e-9);

@@ -6,7 +6,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test \"src/**/*.test.js\"",
+    "test": "node --test \"*/model.test.js\"",
     "new-demo": "node scripts/new-demo.mjs"
   },
   "dependencies": {

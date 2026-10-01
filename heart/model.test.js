@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {cycleTiming, strokeVolume, aorticPressure, stateAt, PHASES, HR_MIN, HR_MAX} from './heart-model.js';
+import {cycleTiming, strokeVolume, aorticPressure, stateAt, PHASES, HR_MIN, HR_MAX} from './model.js';
 
 const hrs = [40, 55, 70, 90, 110, 130, 150, 165, 180];
 const samples = (hr, n = 400) => Array.from({length: n}, (_, i) => stateAt((i / n) * cycleTiming(hr).rr, hr));

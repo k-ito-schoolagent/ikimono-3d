@@ -1,6 +1,6 @@
 // 血液の粒。分かれ道つきの通り道（セグメント）を進み、弁が閉じていると手前で止まる。毛細血管で色が変わる
-import {T} from './stage.js';
-import {COLORS} from './heart-materials.js';
+import {T} from '../lib/stage.js';
+import {COLORS} from './materials.js';
 
 export function createFlow(parent, segments, count = 1400) {
   const geo = new T.IcosahedronGeometry(0.17, 1);

@@ -27,7 +27,7 @@
 | --- | --- |
 | 話してみる | [issue](https://github.com/k-ito-schoolagent/ikimono-3d/issues/new/choose) に「こんなデモがほしい」「この説明はまちがっている」「表示がおかしい」を書く |
 | 直す・足す | 説明文の改善、モデルの前提の追記、テストの追加をプルリクエストで送る |
-| デモをつくる | `npm run new-demo -- <id> "<名前>"` で見本をコピーして、自分のデモを1ページつくる |
+| デモをつくる | `npm run new-demo -- <id> "<名前>"` で見本のフォルダをコピーして、自分のデモを1つつくる |
 | GitHub の練習 | 「練習：はじめての issue」を書く、[CONTRIBUTORS.md](CONTRIBUTORS.md) に名前を足すプルリクエストを送る |
 
 ## 動かす
@@ -45,19 +45,22 @@ Node.js 22 以上を使ってください。
 ## しくみ
 
 ```
+lib/                  共通ライブラリ（すべてのデモが使う）
+  stage.js            3D の舞台（カメラ、光、影、視点ボタン、部位のクリック、ラベル、図面の床）
+  navigation.js       ヘッダーのナビ、ライト／ダーク切り替え、埋め込み表示
+  marching.js         符号付き距離の場から等値面をつくる（マーチングキューブ法）
+  style.css lab.css   デザイン（紙とインク）とデモページの共通レイアウト
+  gallery.js/.css     一覧ページ
+<id>/                 デモはフォルダ 1 つ（heart / osmosis …）。フォルダ名が URL になる（/heart/）
+  index.html          ページ（見出し、操作パネル、説明、モデルの前提）
+  main.js             3D と操作
+  model.js            計算モデル（描画から切り離し、node --test で検証）
+  model.test.js       テスト
+  （heart はさらに field.js 形・materials.js 材質・build.js 舞台装置・flow.js 血液の粒・ui.js 2D表示・worker.js）
+index.html            一覧ページ（分野ごとにまとめて表示）
 demos.json            デモの登録簿（ナビ・一覧ページ・ビルド対象はここから自動でつくられる）
-index.html            一覧ページ
-<id>.html             各デモのページ（heart / osmosis）
-src/<id>.js           各デモの 3D と操作
-src/*-model.js        計算モデル（描画から切り離し、node --test で検証）
-src/*.test.js         テスト
-src/stage.js          3D の舞台（カメラ、光、影、視点ボタン、部位のクリック、ラベル、図面の床）
-src/navigation.js     ヘッダーのナビ、ライト／ダーク切り替え、埋め込み表示
-src/marching.js       符号付き距離の場から等値面をつくる（マーチングキューブ法）
-src/heart-field.js    心臓の形（部屋・内腔・血管を距離の場で定義。断面にすると壁の厚さが出る）
-src/heart-*.js        心臓デモの材質・舞台装置・血液の粒・2D表示
-scripts/new-demo.mjs  新しいデモの雛形をつくるスクリプト
-public/thumbs/        一覧のサムネイル（<デモ>.html?embed&thumb で書き出す）
+scripts/new-demo.mjs  新しいデモの雛形をつくるスクリプト（osmosis/ をコピー）
+public/thumbs/        一覧のサムネイル（<デモ>/?embed&thumb で書き出す）
 publish.sh            GitHub にリポジトリをつくって Pages を有効化する
 ```
 

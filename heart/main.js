@@ -1,16 +1,16 @@
-// 心臓と血液循環: 3D と操作の本体。計算は heart-model.js、形は heart-field.js、材質は heart-materials.js
-import {T, createStage, drawDraftingPlate, REDUCED_MOTION} from './stage.js';
+// 心臓と血液循環: 3D と操作の本体。計算は model.js、形は field.js、材質は materials.js、舞台装置は build.js、粒は flow.js、2D は ui.js
+import {T, createStage, drawDraftingPlate, REDUCED_MOTION} from '../lib/stage.js';
 import {createIcons, Box, PanelTop, PanelLeft, LayoutGrid, ScanEye, RotateCcw} from 'lucide';
-import {mountNavigation, EMBED} from './navigation.js';
-import {polygonizeRaw, toGeometry} from './marching.js';
-import {buildField, FIELD_BOUNDS, PARTS} from './heart-field.js';
-import {stateAt, cycleTiming, strokeVolume, aorticPressure, PRESETS, HR_MIN, HR_MAX} from './heart-model.js';
-import {uniforms, createHeartMaterial, createSchematicMaterial, createOutlineMaterial, createCapMaterial, createStencilMaterials} from './heart-materials.js';
-import {buildVessels, buildOrgans, buildSegments, buildValves, buildConduction, PART_INFO, LABELS, INNER_LABELS} from './heart-build.js';
-import {createFlow} from './heart-flow.js';
-import {createHistory, drawMonitor, drawChart, buildSchematic, buildPhaseList} from './heart-ui.js';
-import './style.css';
-import './lab.css';
+import {mountNavigation, EMBED} from '../lib/navigation.js';
+import {polygonizeRaw, toGeometry} from '../lib/marching.js';
+import {buildField, FIELD_BOUNDS, PARTS} from './field.js';
+import {stateAt, cycleTiming, strokeVolume, aorticPressure, PRESETS, HR_MIN, HR_MAX} from './model.js';
+import {uniforms, createHeartMaterial, createSchematicMaterial, createOutlineMaterial, createCapMaterial, createStencilMaterials} from './materials.js';
+import {buildVessels, buildOrgans, buildSegments, buildValves, buildConduction, PART_INFO, LABELS, INNER_LABELS} from './build.js';
+import {createFlow} from './flow.js';
+import {createHistory, drawMonitor, drawChart, buildSchematic, buildPhaseList} from './ui.js';
+import '../lib/style.css';
+import '../lib/lab.css';
 
 mountNavigation('heart');
 createIcons({icons: {Box, PanelTop, PanelLeft, LayoutGrid, ScanEye, RotateCcw}});
@@ -73,7 +73,7 @@ function assemble(raw) {
   startOpening();
 }
 try {
-  const worker = new Worker(new URL('./heart-worker.js', import.meta.url), {type: 'module'});
+  const worker = new Worker(new URL('./worker.js', import.meta.url), {type: 'module'});
   worker.onmessage = (e) => {assemble(e.data); worker.terminate();};
   worker.onerror = () => {worker.terminate(); assembleOnMainThread();};
   worker.postMessage({step: 0.17});

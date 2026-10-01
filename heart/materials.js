@@ -1,6 +1,6 @@
 // 心臓の材質。拍動（頂点の変形）、部位ごとの色、内腔の血液色、ハイライト、興奮の光を 1 つのシェーダーに足す
-import {T} from './stage.js';
-import {PARTS} from './heart-field.js';
+import {T} from '../lib/stage.js';
+import {PARTS} from './field.js';
 
 export const COLORS = {
   artery: new T.Color(0xd7363d), vein: new T.Color(0x3f63b8), conduction: new T.Color(0xf2c14e),

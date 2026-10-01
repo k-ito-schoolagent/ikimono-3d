@@ -1,5 +1,5 @@
 // 2D の表示: 心電図モニター、圧力・容積のグラフ、血液の通り道の模式図、心周期の5つの期
-import {PHASES} from './heart-model.js';
+import {PHASES} from './model.js';
 
 const cssCache = {theme: null, values: {}};
 const css = (name) => {

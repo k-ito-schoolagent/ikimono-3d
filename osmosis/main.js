@@ -1,10 +1,10 @@
 // 見本デモ：浸透と細胞。新しいデモはこのファイルと osmosis.html をコピーしてつくる
-import {T, createStage, drawDraftingPlate, material, add, REDUCED_MOTION} from './stage.js';
+import {T, createStage, drawDraftingPlate, material, add, REDUCED_MOTION} from '../lib/stage.js';
 import {createIcons, Box, PanelTop, LayoutGrid, RotateCcw} from 'lucide';
-import {mountNavigation} from './navigation.js';
-import {relativeVolume, tonicity, lyses, step, ISOTONIC} from './osmosis-model.js';
-import './style.css';
-import './lab.css';
+import {mountNavigation} from '../lib/navigation.js';
+import {relativeVolume, tonicity, lyses, step, ISOTONIC} from './model.js';
+import '../lib/style.css';
+import '../lib/lab.css';
 
 mountNavigation('osmosis');          // demos.json の id
 createIcons({icons: {Box, PanelTop, LayoutGrid, RotateCcw}});

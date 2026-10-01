@@ -1,7 +1,7 @@
 // 心臓のまわりの舞台装置: 心臓の外へ続く血管、肺、全身（毛細血管のある場所）、弁、刺激伝導系、部位のラベル、血液の通り道
-import {T} from './stage.js';
+import {T} from '../lib/stage.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
-import {COLORS, createConductionMaterial} from './heart-materials.js';
+import {COLORS, createConductionMaterial} from './materials.js';
 
 const v3 = (p) => (p.isVector3 ? p : new T.Vector3(...p));
 const curve = (pts) => new T.CatmullRomCurve3(pts.map(v3), false, 'centripetal', 0.5);

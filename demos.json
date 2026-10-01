@@ -1,7 +1,7 @@
 [
   {
     "id": "heart",
-    "page": "heart.html",
+    "dir": "heart",
     "label": "心臓と血液循環",
     "category": "ヒトのからだ",
     "title": "心臓と血液循環",
@@ -13,7 +13,7 @@
   },
   {
     "id": "osmosis",
-    "page": "osmosis.html",
+    "dir": "osmosis",
     "label": "浸透と細胞（見本）",
     "category": "細胞",
     "title": "浸透と細胞（新しいデモの見本）",
